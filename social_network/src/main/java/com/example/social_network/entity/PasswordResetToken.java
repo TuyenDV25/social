@@ -12,29 +12,33 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "password_reset_tokens")
-public class PasswordResetToken implements Serializable {/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8308103083764632795L;
+public class PasswordResetToken implements Serializable {
+	/**
+	* 
+	*/
+	static final long serialVersionUID = -8308103083764632795L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	private String token;
-	
+	Long id;
+
+	String token;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "userInfo_id", referencedColumnName = "id")
 	@JsonManagedReference
-	private UserInfo userInfo;
+	UserInfo userInfo;
 
 }

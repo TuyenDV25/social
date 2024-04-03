@@ -5,24 +5,31 @@ import java.time.LocalDate;
 import com.example.social_network.dto.image.ImageResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserInforResDto {
-	private String username;
+	String username;
 
-	private boolean gender;
+	boolean gender;
 
 	@JsonProperty("last_name")
-	private String lastName;
+	String lastName;
 
 	@JsonProperty("first_name")
-	private String firstName;
+	String firstName;
 
-	private LocalDate dob;
+	LocalDate dob;
 
-	private String bio;
+	String bio;
 
 	@JsonProperty("avatar_image")
-	private ImageResDto avatar;
+	ImageResDto avatar;
 }

@@ -49,5 +49,4 @@ public class FileServiceImpl implements FileService {
 			throw new AppException(ErrorCode.FILE_UPLOAD);
 		}
 	}
-
 }

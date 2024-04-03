@@ -1,17 +1,21 @@
 package com.example.social_network.exception;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppException extends RuntimeException {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	static final long serialVersionUID = 1L;
 
 	public AppException(ErrorCode errorCode) {
 		super(errorCode.getMessage());
 		this.errorCode = errorCode;
 	}
 
-	private ErrorCode errorCode;
+	ErrorCode errorCode;
 
 	public ErrorCode getErrorCode() {
 		return errorCode;

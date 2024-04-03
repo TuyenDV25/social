@@ -10,14 +10,17 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.service.FileService;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UploadFileController {
 
 	@Autowired
-	private FileService fileService;
+	FileService fileService;
 
 	@PostMapping("/upload")
 	ResponseEntity<?> upload(@RequestParam(value = "files", required = false) MultipartFile files) {

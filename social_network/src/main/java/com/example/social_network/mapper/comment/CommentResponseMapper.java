@@ -6,7 +6,7 @@ import com.example.social_network.dto.comment.CommentResDto;
 import com.example.social_network.entity.Comment;
 import com.example.social_network.mapper.MapperI;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CommentResponseMapper extends MapperI<Comment, CommentResDto> {
 
 }

@@ -13,36 +13,39 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "post")
 @EqualsAndHashCode(callSuper = true)
 public class Post extends AbstractEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "userInfo_id", updatable = false)
-	private UserInfo user;
+	UserInfo userInfo;
 
 	@Column
-	private String content;
+	String content;
 
 	@Column
-	private Integer privacy;
+	Integer privacy;
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	private List<Comment> comments = new ArrayList<>();
+	List<Comment> comments = new ArrayList<>();
 
 	@OneToOne(mappedBy = "post")
 	@JsonBackReference
-	private Image image;
+	Image image;
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	private List<Like> likes = new ArrayList<>();
+	List<Like> likes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	private List<Share> shares = new ArrayList<>();
+	List<Share> shares = new ArrayList<>();
 
 }

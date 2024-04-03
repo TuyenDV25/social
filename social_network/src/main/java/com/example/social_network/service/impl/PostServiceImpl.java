@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
 		Post post = imageMapper.dtoToEntity(reqDto);
 
-		post.setUser(userInfoRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+		post.setUserInfo(userInfoRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.get());
 		postRepository.save(post);
 

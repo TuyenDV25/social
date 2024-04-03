@@ -3,27 +3,34 @@ package com.example.social_network.dto.post;
 import com.example.social_network.dto.image.ImageResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostPostResDto {
 
-	private String content;
+	String content;
 
-	private Integer privacy;
+	Integer privacy;
 
 	@JsonProperty("image")
-	private ImageResDto image;
+	ImageResDto image;
 
 	@JsonProperty("like_count")
-	private Long likeCount;
+	Long likeCount;
 
 	@JsonProperty("cmt_count")
-	private Long commentCount;
+	Long commentCount;
 
 	@JsonProperty("share_count")
-	private Long shareCount;
+	Long shareCount;
 
-	private Boolean liked;
+	Boolean liked;
 
 }

@@ -13,13 +13,16 @@ import com.example.social_network.dto.user.UserInforResDto;
 import com.example.social_network.service.UserService;
 
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 @RestController
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @RequestMapping("/user")
 public class UserController {
 
 	@Autowired
-	private UserService userService;
+	UserService userService;
 
 	@PostMapping("/update")
 	public UserInfoPutResDto updateInfo(@Valid @RequestBody UserInfoPutReqDto reqDto) {

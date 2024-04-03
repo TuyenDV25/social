@@ -23,13 +23,16 @@ import com.example.social_network.service.AuthService;
 import com.example.social_network.utils.CommonConstants;
 
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 @RestController
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @RequestMapping("/auth")
 public class AuthController {
 
 	@Autowired
-	private AuthService service;
+	AuthService service;
 
 	@PostMapping("/register")
 	public BaseResponse<RegistUserResDto> register(@RequestBody @Valid RegistUserRepDto userInfo) {

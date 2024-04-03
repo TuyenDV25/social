@@ -6,7 +6,7 @@ import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.entity.Image;
 import com.example.social_network.mapper.MapperI;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ImageResponseMapper extends MapperI<Image, ImageResDto> {
 	
 

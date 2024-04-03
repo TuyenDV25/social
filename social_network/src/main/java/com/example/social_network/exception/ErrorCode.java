@@ -3,9 +3,12 @@ package com.example.social_network.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCode {
 
 	UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -30,7 +33,7 @@ public enum ErrorCode {
 		this.statusCode = statusCode;
 	}
 
-	private int code;
-	private String message;
-	private HttpStatusCode statusCode;
+	int code;
+	String message;
+	HttpStatusCode statusCode;
 }

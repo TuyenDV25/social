@@ -6,7 +6,7 @@ import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.entity.Post;
 import com.example.social_network.mapper.MapperI;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PostResponseMapper extends MapperI<Post, PostPostResDto> {
 
 }

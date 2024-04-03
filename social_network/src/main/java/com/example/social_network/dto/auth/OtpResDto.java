@@ -1,13 +1,15 @@
 package com.example.social_network.dto.auth;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OtpResDto {
 	int otp;
-
-	public int getOtp() {
-		return otp;
-	}
-
-	public void setOtp(int otp) {
-		this.otp = otp;
-	}
 }

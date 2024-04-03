@@ -2,18 +2,21 @@ package com.example.social_network.exception;
 
 import java.util.Date;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ErrorMessage {
 
-	private int statusCode;
+	int statusCode;
 
-	private Date timestamp;
+	Date timestamp;
 
-	private String message;
+	String message;
 
-	private String description;
+	String description;
 }

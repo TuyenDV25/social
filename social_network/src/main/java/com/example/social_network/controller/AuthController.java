@@ -1,8 +1,6 @@
 package com.example.social_network.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,12 +36,6 @@ public class AuthController {
 	public BaseResponse<RegistUserResDto> register(@RequestBody @Valid RegistUserRepDto userInfo) {
 		service.insertUser(userInfo);
 		return BaseResponse.<RegistUserResDto>builder().message(CommonConstants.REGISTER_SUCCESS).build();
-	}
-
-	@GetMapping("/user/userProfile")
-	@PreAuthorize("hasAuthority('ROLE_USER')")
-	public String userProfile() {
-		return "Welcome to User Profile";
 	}
 
 	@PostMapping("/generateOtp")

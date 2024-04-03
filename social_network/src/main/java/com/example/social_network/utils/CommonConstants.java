@@ -10,6 +10,12 @@ public class CommonConstants {
 	
 	public static final String REGISTER_SUCCESS = "Đăng ký tài khoản thành công";
 	
+	public static final String POST_CREATE_SUCCESS = "create post successfully";
+	
+	public static final String POST_UPDATE_SUCCESS = "update post successfully";
+	
+	public static final String POST_DELETE_SUCCESS = "delete post successfully";
+	
 	public static final String USER_EXISTED = "UserName đã tồn tại";
 	
 	public static final String GENERATE_OTP_SUCCESS = "Đã tạo OTP thành công";

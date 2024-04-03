@@ -49,7 +49,8 @@ public class SecurityConfig {
 						.requestMatchers("/auth/welcome", "/auth/register", "/auth/generateOtp").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/password-reset-request", "/auth/password-reset",
 								"/auth/authenticate")
-						.permitAll().requestMatchers("/auth/user/**").authenticated().requestMatchers("/auth/admin/**")
+						.permitAll()
+						.requestMatchers("/auth/user/**").authenticated().requestMatchers("/auth/admin/**")
 						.authenticated().anyRequest().authenticated())
 				.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

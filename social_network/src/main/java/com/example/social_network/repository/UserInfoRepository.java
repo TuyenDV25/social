@@ -15,5 +15,5 @@ import com.example.social_network.entity.UserInfo;
 public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
 	Optional<UserInfo> findByUsername(String username);
 	
-	Page<UserInfo> findAllByFirstNameLikeOrLastNameLike(String firstName, String lastName, Pageable pageable);
+	Page<UserInfo> findAllByFirstNameContainsOrLastNameContains(String firstName, String lastName, Pageable pageable);
 }

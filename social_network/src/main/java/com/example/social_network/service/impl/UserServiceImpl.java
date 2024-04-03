@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Page<UserInforResDto> searchUserByName(UserInfoListPostReqDto reqDto) {
 		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
-		Page<UserInfo> pagedResult = userInfoRepository.findAllByFirstNameLikeOrLastNameLike(reqDto.getName(),
+		Page<UserInfo> pagedResult = userInfoRepository.findAllByFirstNameContainsOrLastNameContains(reqDto.getName(),
 				reqDto.getName(), paging);
 		List<UserInforResDto> userInfoResponseList = pagedResult.stream().map(userInfoResponseUtils::convert)
 				.collect(Collectors.toList());

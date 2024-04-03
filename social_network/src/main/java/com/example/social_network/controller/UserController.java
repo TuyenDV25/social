@@ -65,6 +65,6 @@ public class UserController {
 		Page<UserInforResDto> userInforList = userService.searchUserByName(reqDto);
 		return BaseResponse.<UserInfoListPostResDto>builder()
 				.result(UserInfoListPostResDto.builder().listUser(userInforList).build())
-				.message(CommonConstants.REQUEST_RESET_PASSWORD_SUCCESS).build();
+				.message(CommonConstants.USER_SEARCH_SUCCES).build();
 	}
 }

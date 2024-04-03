@@ -18,6 +18,8 @@ public class CommonConstants {
 	
 	public static final String USER_EXISTED = "UserName đã tồn tại";
 	
+	public static final String USER_SEARCH_SUCCES = "search user successfully";
+	
 	public static final String GENERATE_OTP_SUCCESS = "Đã tạo OTP thành công";
 	
 	public static final String SIGN_UP_SUCCESS = "Đăng nhập thành công";

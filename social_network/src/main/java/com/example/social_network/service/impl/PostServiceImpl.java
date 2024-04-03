@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostPostResDto createPost(PostPostReqDto reqDto) {
 
-		if (StringUtils.isBlank(reqDto.getContent()) || reqDto.getUploadFile() == null) {
+		if (StringUtils.isBlank(reqDto.getContent()) && reqDto.getUploadFile() == null) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
 		}
 

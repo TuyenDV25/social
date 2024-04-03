@@ -1,6 +1,7 @@
 package com.example.social_network.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,8 +32,9 @@ public class PostController {
 	 * @param reqDto {@link PostPostReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PostMapping("/create")
-	BaseResponse<PostPostResDto> createPost(@RequestBody @Valid PostPostReqDto reqDto) {
+	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	BaseResponse<PostPostResDto> createPost(PostPostReqDto reqDto) {
 		PostPostResDto resDto = postService.createPost(reqDto);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_CREATE_SUCCESS)
 				.build();
@@ -44,8 +46,9 @@ public class PostController {
 	 * @param reqDto {@link PostPostReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PutMapping("/update")
-	BaseResponse<PostPostResDto> updatePost(@RequestBody @Valid PostPostReqDto reqDto) {
+	@PutMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	BaseResponse<PostPostResDto> updatePost(PostPostReqDto reqDto) {
 		PostPostResDto resDto = postService.update(reqDto);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_UPDATE_SUCCESS)
 				.build();

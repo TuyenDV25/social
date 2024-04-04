@@ -25,7 +25,9 @@ public enum ErrorCode {
 	FILE_SIZE(1011,"your file over 5mb",HttpStatus.BAD_REQUEST),
 	FILE_UPLOAD(1012,"upload image error",HttpStatus.BAD_REQUEST),
 	POST_NOTEXISTED(1002, "post not existed", HttpStatus.BAD_REQUEST),
+	COMMENT_NOTEXISTED(1002, "comment not existed", HttpStatus.BAD_REQUEST),
 	POST_UPLOAD_WRONG(1013, "post must have at least content or file", HttpStatus.BAD_REQUEST),
+	COMMENT_UPLOAD_WRONG(1013, "comment must have at least content or file", HttpStatus.BAD_REQUEST),
 	;
 
 	ErrorCode(int code, String message, HttpStatusCode statusCode) {

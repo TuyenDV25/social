@@ -1,11 +1,10 @@
 package com.example.social_network.dto.post;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.domain.Page;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,13 +12,9 @@ import lombok.experimental.FieldDefaults;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostPostReqDto {
+public class PostListResDto {
 
-	String content;
-
-	int privacy;
-
-	@JsonProperty("image")
-	MultipartFile uploadFile;
+	Page<PostPostResDto> listPost;
 }

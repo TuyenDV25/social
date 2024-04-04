@@ -1,7 +1,14 @@
 package com.example.social_network.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.post.DeletePostReqDto;
 import com.example.social_network.dto.post.DeletePostResDto;
+import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.dto.utils.post.PostResponseUtils;
@@ -69,12 +77,12 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostPostResDto update(PostPostReqDto reqDto) {
+	public PostPostResDto update(Long id, PostPostReqDto reqDto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
-		Post post = postRepository.findById(user.getId()).get();
+		Post post = postRepository.findById(id).get();
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
@@ -86,11 +94,11 @@ public class PostServiceImpl implements PostService {
 
 		if (reqDto.getUploadFile() != null) {
 			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
-
 			post.setImage(imageMapper.dtoToEntity(imageResDto));
 		}
 
 		post.setContent(reqDto.getContent());
+		post.setPrivacy(reqDto.getPrivacy());
 
 		if (StringUtils.isBlank(post.getContent()) && post.getImage() == null) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
@@ -114,6 +122,53 @@ public class PostServiceImpl implements PostService {
 		postRepository.deleteById(reqDto.getId());
 
 		return new DeletePostResDto(reqDto.getId());
+	}
+
+	@Override
+	public PostPostResDto getPostDetail(Long Id) {
+		Post post = postRepository.findOneById(Id);
+		if (post == null) {
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
+		}
+		UserInfo userInfor = userInfoRepository
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+		if (post.getPrivacy() == CommonConstants.PRIVACY_ONLYME && userInfor.getId() != post.getId()) {
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
+		}
+		PostPostResDto resDto = postResponseUtils.convert(post);
+		return resDto;
+	}
+
+	@Override
+	public Page<PostPostResDto> getUserAllPost(Long id, PostListReqDto reqDto) {
+		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
+		UserInfo user = userInfoRepository.findOneById(id);
+		if (user == null) {
+			throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		}
+		Page<Post> pagedResult = postRepository.findAllByUserInfoOrderbyIdDesc(user, paging);
+		UserInfo userInfor = userInfoRepository
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+		List<PostPostResDto> postResponseList = pagedResult.stream()
+				.filter(post -> post.getUserInfo().getId() == userInfor.getId()
+						|| (post.getUserInfo().getId() != userInfor.getId()
+								&& post.getPrivacy() != CommonConstants.PRIVACY_ONLYME))
+				.map(postResponseUtils::convert).collect(Collectors.toList());
+		return new PageImpl<>(postResponseList, paging, postResponseList.size());
+	}
+
+	@Override
+	public Page<PostPostResDto> getAllPostByKeyword(PostListReqDto reqDto) {
+		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
+		Page<Post> pagedResult = postRepository.findAllByContentContains(reqDto.getContent(),paging);
+		UserInfo userInfor = userInfoRepository
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+		List<PostPostResDto> postResponseList = pagedResult.stream()
+				.filter(post -> post.getUserInfo().getId() == userInfor.getId()
+						|| (post.getUserInfo().getId() != userInfor.getId()
+								&& post.getPrivacy() != CommonConstants.PRIVACY_ONLYME))
+				.map(postResponseUtils::convert).collect(Collectors.toList());
+		return new PageImpl<>(postResponseList, paging, postResponseList.size());
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.example.social_network.dto.post;
+package com.example.social_network.dto.comment;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,12 +14,10 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostPostReqDto {
+public class CommentReqPostDto {
 
 	String content;
-
-	int privacy;
-
+	
 	@JsonProperty("image")
 	MultipartFile uploadFile;
 }

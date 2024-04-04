@@ -16,4 +16,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
 	Optional<UserInfo> findByUsername(String username);
 	
 	Page<UserInfo> findAllByFirstNameContainsOrLastNameContains(String firstName, String lastName, Pageable pageable);
+	
+	UserInfo findOneById(Long id);
 }

@@ -146,7 +146,7 @@ public class PostServiceImpl implements PostService {
 		if (user == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		}
-		Page<Post> pagedResult = postRepository.findAllByUserInfoOrderbyIdDesc(user, paging);
+		Page<Post> pagedResult = postRepository.findByUserInfo(user, paging);
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 		List<PostPostResDto> postResponseList = pagedResult.stream()
@@ -160,7 +160,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostPostResDto> getAllPostByKeyword(PostListReqDto reqDto) {
 		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
-		Page<Post> pagedResult = postRepository.findAllByContentContains(reqDto.getContent(),paging);
+		Page<Post> pagedResult = postRepository.findByContentContains(reqDto.getContent(),paging);
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 		List<PostPostResDto> postResponseList = pagedResult.stream()

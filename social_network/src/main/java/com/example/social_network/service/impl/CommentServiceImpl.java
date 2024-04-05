@@ -116,7 +116,7 @@ public class CommentServiceImpl implements CommentService {
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
-		Page<Comment> pagedResult = commentRepository.findAllByPostAndOrderByIdDesc(post, paging);
+		Page<Comment> pagedResult = commentRepository.findByPost(post, paging);
 		List<CommentResDto> commentResponseList = pagedResult.stream().map(commentResponseUtils::convert)
 				.collect(Collectors.toList());
 		return new PageImpl<>(commentResponseList, paging, commentResponseList.size());

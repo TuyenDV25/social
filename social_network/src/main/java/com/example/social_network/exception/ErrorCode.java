@@ -25,6 +25,10 @@ public enum ErrorCode {
 	COMMENT_NOTEXISTED(1002, "comment not existed", HttpStatus.BAD_REQUEST),
 	POST_UPLOAD_WRONG(1013, "post must have at least content or file", HttpStatus.BAD_REQUEST),
 	ADD_FRIEND_YOUSELF(1013, "You can not add friend youself", HttpStatus.BAD_REQUEST),
+	ADD_REQUEST_TO_FRIEND(1013, "can not add friend with your friend", HttpStatus.BAD_REQUEST),
+	REMOVE_REQUEST_TO_FRIEND(1013, "can not remove request when have been friend", HttpStatus.BAD_REQUEST),
+	ADD_REQUEST_AGAIN_TO_FRIEND(1013, "you have send request to your friend", HttpStatus.BAD_REQUEST),
+	REMOVE_REQUEST_AGAIN_TO_FRIEND(1013, "you have not send request to remove", HttpStatus.BAD_REQUEST),
 	COMMENT_UPLOAD_WRONG(1013, "comment must have at least content or file", HttpStatus.BAD_REQUEST),;
 
 	ErrorCode(int code, String message, HttpStatusCode statusCode) {

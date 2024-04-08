@@ -25,6 +25,10 @@ public class CommonConstants {
 	public static final String COMMENT_DELETE_SUCCESS = "delete comment successfully";
 	
 	public static final String LIKE_PROCESS = "handle like process successfully";
+	
+	public static final String LIST_REQUEST = "get list request successfully";
+	
+	public static final String ADD_REQUEST_FRIEND_SUCCESS = "add request friend successfully";
 
 	public static final String USER_EXISTED = "UserName đã tồn tại";
 

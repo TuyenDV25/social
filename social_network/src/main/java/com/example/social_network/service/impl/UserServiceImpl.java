@@ -99,4 +99,9 @@ public class UserServiceImpl implements UserService {
 		return new PageImpl<>(userInfoResponseList, paging, userInfoResponseList.size());
 	}
 
+	@Override
+	public void updateUserInfo(UserInfo userInfo) {
+		userInfoRepository.save(userInfo);
+	}
+
 }

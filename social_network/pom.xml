@@ -103,6 +103,11 @@
 			<artifactId>cloudinary-http44</artifactId>
 			<version>1.33.0</version>
 		</dependency>
+		<dependency>
+            <groupId>com.github.gavlyukovskiy</groupId>
+            <artifactId>p6spy-spring-boot-starter</artifactId>
+            <version>1.9.0</version>
+         </dependency>
 	</dependencies>
 	<build>
 		<plugins>

@@ -83,7 +83,7 @@ public class CommentServiceImpl implements CommentService {
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
-		if (comment == null || commentRepository.findByUserInfoAndId(userInfor, reqDto.getId()) == null) {
+		if (comment == null || commentRepository.findByUserAndId(userInfor, reqDto.getId()) == null) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}
 		if (reqDto.getUploadFile() != null) {

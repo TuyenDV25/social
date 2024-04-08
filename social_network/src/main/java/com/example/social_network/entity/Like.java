@@ -5,23 +5,46 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
 
 @Entity
-@Data
+@Builder
 @Table(name = "likes")
-@EqualsAndHashCode(callSuper = true)
-public class Like extends AbstractEntity{
+public class Like extends AbstractEntity {
 
 	@ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserInfo userInfo;
+	@JoinColumn(name = "user_id")
+	private UserInfo userInfo;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
-    
-    @Column
-    private boolean status;
+	@ManyToOne
+	@JoinColumn(name = "post_id")
+	private Post post;
+
+	@Column
+	private boolean status;
+
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public Post getPost() {
+		return post;
+	}
+
+	public void setPost(Post post) {
+		this.post = post;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 }

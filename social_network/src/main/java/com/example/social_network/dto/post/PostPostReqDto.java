@@ -4,22 +4,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostPostReqDto {
 
-	String content;
+	private String content;
 
-	int privacy;
+	private int privacy;
 
 	@JsonProperty("image")
-	MultipartFile uploadFile;
+	private MultipartFile uploadFile;
 }

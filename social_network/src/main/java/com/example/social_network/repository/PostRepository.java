@@ -13,7 +13,7 @@ import com.example.social_network.entity.UserInfo;
 @Transactional
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-	Long findByUserInfoAndId(UserInfo userInfo, Long id);
+	Post findByUserInfoAndId(UserInfo userInfo, Long id);
 
 	Post findOneById(Long id);
 

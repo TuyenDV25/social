@@ -8,31 +8,56 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.FieldDefaults;
 
 @Entity
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "comment")
-@EqualsAndHashCode(callSuper = true)
 public class Comment extends AbstractEntity {
 
 	@Column
-	String content;
+	private String content;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	UserInfo user;
+	private UserInfo user;
 
 	@ManyToOne
 	@JoinColumn(name = "post_id")
-	Post post;
+	private Post post;
 
 	@OneToOne(mappedBy = "comment")
 	@JsonBackReference
-	Image image;
+	private Image image;
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public UserInfo getUser() {
+		return user;
+	}
+
+	public void setUser(UserInfo user) {
+		this.user = user;
+	}
+
+	public Post getPost() {
+		return post;
+	}
+
+	public void setPost(Post post) {
+		this.post = post;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
 
 }

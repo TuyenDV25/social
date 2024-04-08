@@ -12,29 +12,26 @@ import com.example.social_network.repository.CommentRepository;
 import com.example.social_network.repository.LikeRepository;
 import com.example.social_network.repository.ShareRepository;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Component
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostResponseUtils extends ResponseUtilsAdapter<Post, PostPostResDto> {
 
 	@Autowired
-	PostResponseMapper postMapper;
+	private PostResponseMapper postMapper;
 
 	@Autowired
-	ImageResponseMapper imageMapper;
+	private ImageResponseMapper imageMapper;
 
 	@Autowired
-	LikeRepository likeRepository;
+	private LikeRepository likeRepository;
 
 	@Autowired
-	CommentRepository commentRepository;
+	private CommentRepository commentRepository;
 
 	@Autowired
-	ShareRepository shareRepository;
+	private ShareRepository shareRepository;
 
 	@Override
 	public PostPostResDto convert(Post entity) {

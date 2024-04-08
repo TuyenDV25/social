@@ -38,7 +38,7 @@ public class ApiExceptionHandler {
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
 			String fieldName = ((FieldError) error).getField();
 			String errorCode = error.getDefaultMessage();
-			fieldErrors.put(fieldName, ErrorCode.valueOf(errorCode).getMessage());
+			fieldErrors.put(fieldName, errorCode);
 		});
 		errors.put("success", false);
 		errors.put("messsage", "your input request is not valid");
@@ -47,39 +47,33 @@ public class ApiExceptionHandler {
 	}
 
 	@ExceptionHandler(value = AppException.class)
-    ResponseEntity<BaseResponse> handlingAppException(AppException exception){
-        ErrorCode errorCode = exception.getErrorCode();
-        BaseResponse apiResponse = new BaseResponse();
+	ResponseEntity<BaseResponse<?>> handlingAppException(AppException exception) {
+		ErrorCode errorCode = exception.getErrorCode();
+		BaseResponse<?> apiResponse = new BaseResponse<>();
 
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
+		apiResponse.setCode(errorCode.getCode());
+		apiResponse.setMessage(errorCode.getMessage());
 
-        return ResponseEntity
-                .status(errorCode.getStatusCode())
-                .body(apiResponse);
-    }
-	
+		return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+	}
+
 	@ExceptionHandler(value = Exception.class)
-    ResponseEntity<BaseResponse> handlingRuntimeException(RuntimeException exception){
-        log.error("Exception: ", exception);
-        BaseResponse apiResponse = new BaseResponse();
+	ResponseEntity<BaseResponse<?>> handlingRuntimeException(RuntimeException exception) {
+		log.error("Exception: ", exception);
+		BaseResponse<?> apiResponse = new BaseResponse<>();
 
-        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+		apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
+		apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
 
-        return ResponseEntity.badRequest().body(apiResponse);
-    }
-	
+		return ResponseEntity.badRequest().body(apiResponse);
+	}
+
 	@ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<BaseResponse> handlingAccessDeniedException(AccessDeniedException exception){
-        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+	ResponseEntity<BaseResponse<?>> handlingAccessDeniedException(AccessDeniedException exception) {
+		ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 
-        return ResponseEntity.status(errorCode.getStatusCode()).body(
-        		BaseResponse.builder()
-                        .code(errorCode.getCode())
-                        .message(errorCode.getMessage())
-                        .build()
-        );
-    }
+		return ResponseEntity.status(errorCode.getStatusCode())
+				.body(BaseResponse.builder().code(errorCode.getCode()).message(errorCode.getMessage()).build());
+	}
 
 }

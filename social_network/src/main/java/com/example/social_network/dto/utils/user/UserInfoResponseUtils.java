@@ -12,16 +12,13 @@ import com.example.social_network.mapper.image.ImageResponseMapper;
 import com.example.social_network.mapper.user.UserMapper;
 import com.example.social_network.utils.Utils;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Component
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserInfoResponseUtils extends ResponseUtilsAdapter<UserInfo, UserInforResDto> {
-	final UserMapper userMapper;
-	final ImageResponseMapper imageMapper;
+	private final UserMapper userMapper;
+	private final ImageResponseMapper imageMapper;
 
 	@Override
 	public UserInforResDto convert(UserInfo obj) {

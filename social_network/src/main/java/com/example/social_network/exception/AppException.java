@@ -1,9 +1,5 @@
 package com.example.social_network.exception;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppException extends RuntimeException {
 	/**
 	 * 
@@ -15,7 +11,7 @@ public class AppException extends RuntimeException {
 		this.errorCode = errorCode;
 	}
 
-	ErrorCode errorCode;
+	private ErrorCode errorCode;
 
 	public ErrorCode getErrorCode() {
 		return errorCode;

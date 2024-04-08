@@ -18,19 +18,16 @@ import com.example.social_network.service.UserService;
 import com.example.social_network.utils.CommonConstants;
 
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
 /**
  * TuyenDV
  */
 @RestController
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @RequestMapping("/user")
 public class UserController {
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
 	/**
 	 * update user information

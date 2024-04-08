@@ -9,20 +9,17 @@ import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
 import com.example.social_network.entity.Comment;
 import com.example.social_network.mapper.image.ImageResponseMapper;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Component
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentResDto> {
 
 	@Autowired
-	ImageResponseMapper imageMapper;
+	private ImageResponseMapper imageMapper;
 
 	@Autowired
-	UserInfoResponseUtils userInfoResponseUtils;
+	private UserInfoResponseUtils userInfoResponseUtils;
 
 	@Override
 	public CommentResDto convert(Comment entity) {

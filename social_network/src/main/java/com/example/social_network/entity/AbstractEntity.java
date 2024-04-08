@@ -9,24 +9,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 @Data
 @MappedSuperclass
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	private Long id;
 
 	@Column(updatable = false)
 	@CreationTimestamp
-	Date createdDate;
+	private Date createdDate;
 
 	@Column(updatable = true)
 	@CreationTimestamp
-	Date updateDate;
+	private Date updateDate;
 }

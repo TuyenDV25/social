@@ -13,39 +13,91 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.FieldDefaults;
 
 @Entity
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "post")
-@EqualsAndHashCode(callSuper = true)
 public class Post extends AbstractEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "userInfo_id", updatable = false)
-	UserInfo userInfo;
+	private UserInfo userInfo;
 
 	@Column
-	String content;
+	private String content;
 
+	/**
+	 * 1: public 2: friend 3: only me
+	 */
 	@Column
-	Integer privacy;
+	private Integer privacy;
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	List<Comment> comments = new ArrayList<>();
+	private List<Comment> comments = new ArrayList<>();
 
 	@OneToOne(mappedBy = "post")
 	@JsonBackReference
-	Image image;
+	private Image image;
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	List<Like> likes = new ArrayList<>();
+	private List<Like> likes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	List<Share> shares = new ArrayList<>();
+	private List<Share> shares = new ArrayList<>();
+
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Integer getPrivacy() {
+		return privacy;
+	}
+
+	public void setPrivacy(Integer privacy) {
+		this.privacy = privacy;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	public List<Like> getLikes() {
+		return likes;
+	}
+
+	public void setLikes(List<Like> likes) {
+		this.likes = likes;
+	}
+
+	public List<Share> getShares() {
+		return shares;
+	}
+
+	public void setShares(List<Share> shares) {
+		this.shares = shares;
+	}
 
 }

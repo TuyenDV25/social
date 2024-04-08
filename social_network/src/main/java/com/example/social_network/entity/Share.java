@@ -5,27 +5,44 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.FieldDefaults;
 
 @Entity
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "share")
-@EqualsAndHashCode(callSuper = true)
 public class Share extends AbstractEntity {
 
 	@Column
-	String content;
+	private String content;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	UserInfo userInfo;
+	private UserInfo userInfo;
 
 	@ManyToOne
 	@JoinColumn(name = "post_id")
-	Post post;
+	private Post post;
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public Post getPost() {
+		return post;
+	}
+
+	public void setPost(Post post) {
+		this.post = post;
+	}
 
 }

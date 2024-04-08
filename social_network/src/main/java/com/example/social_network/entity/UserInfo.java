@@ -14,55 +14,58 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "userInfo")
 public class UserInfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	private Long id;
 
-	String username;
+	private String username;
 
-	String password;
+	private String password;
 
 	@Column(columnDefinition = "varchar(255) default 'USER_ROLE'")
-	String roles;
+	private String roles;
 
-	String lastName;
+	private String lastName;
 
-	String firstName;
+	private String firstName;
 
 	@Column
-	LocalDate dob;
+	private LocalDate dob;
 
-	String introyourself;
+	private String introyourself;
 
 	boolean gender;
 
 	@OneToOne(mappedBy = "userInfo")
 	@JsonBackReference
-	PasswordResetToken passwordResetToken;
+	private PasswordResetToken passwordResetToken;
 
 	@OneToMany(mappedBy = "userInfo")
-	List<Image> avatarImage = new ArrayList<>();
+	private List<Image> avatarImage = new ArrayList<>();
 
 	@OneToMany(mappedBy = "userInfo")
-	List<Post> posts = new ArrayList<>();
+	private List<Post> posts = new ArrayList<>();
 
 	@OneToMany(mappedBy = "userInfo")
-	List<Share> shares = new ArrayList<>();
+	private List<Share> shares = new ArrayList<>();
 
 	@OneToMany(mappedBy = "userInfo")
-	List<Like> likes = new ArrayList<>();
+	private List<Like> likes = new ArrayList<>();
+	
+	@OneToMany
+	private List<FriendRequest> listFriendRequest = new ArrayList<>();
+	
+	@OneToMany
+	private List<Friend> listFriend = new ArrayList<>();
 }

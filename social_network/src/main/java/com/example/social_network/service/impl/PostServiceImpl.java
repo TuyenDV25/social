@@ -23,6 +23,7 @@ import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.dto.utils.post.PostResponseUtils;
 import com.example.social_network.entity.Post;
 import com.example.social_network.entity.UserInfo;
+import com.example.social_network.enumdef.PostType;
 import com.example.social_network.exception.AppException;
 import com.example.social_network.exception.ErrorCode;
 import com.example.social_network.mapper.image.ImageResponseMapper;
@@ -132,7 +133,7 @@ public class PostServiceImpl implements PostService {
 		}
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-		if (post.getPrivacy() == CommonConstants.PRIVACY_ONLYME && userInfor.getId() != post.getId()) {
+		if (post.getPrivacy() == PostType.ONLY_ME.getCode() && userInfor.getId() != post.getId()) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 		PostPostResDto resDto = postResponseUtils.convert(post);
@@ -152,7 +153,7 @@ public class PostServiceImpl implements PostService {
 		List<PostPostResDto> postResponseList = pagedResult.stream()
 				.filter(post -> post.getUserInfo().getId() == userInfor.getId()
 						|| (post.getUserInfo().getId() != userInfor.getId()
-								&& post.getPrivacy() != CommonConstants.PRIVACY_ONLYME))
+								&& post.getPrivacy() != PostType.ONLY_ME.getCode()))
 				.map(postResponseUtils::convert).collect(Collectors.toList());
 		return new PageImpl<>(postResponseList, paging, postResponseList.size());
 	}
@@ -166,7 +167,7 @@ public class PostServiceImpl implements PostService {
 		List<PostPostResDto> postResponseList = pagedResult.stream()
 				.filter(post -> post.getUserInfo().getId() == userInfor.getId()
 						|| (post.getUserInfo().getId() != userInfor.getId()
-								&& post.getPrivacy() != CommonConstants.PRIVACY_ONLYME))
+								&& post.getPrivacy() != PostType.ONLY_ME.getCode()))
 				.map(postResponseUtils::convert).collect(Collectors.toList());
 		return new PageImpl<>(postResponseList, paging, postResponseList.size());
 	}

@@ -46,7 +46,7 @@ public class LikeServiceImpl implements LikeService {
 		}
 
 		// check if have liked post before
-		Like like = likeRepository.findOneByPostAndUserInfor(post, userInfor);
+		Like like = likeRepository.findOneByPostAndUserInfo(post, userInfor);
 		if (like == null) {
 			Like newLike = Like.builder().userInfo(userInfor).post(post).status(true).build();
 			likeRepository.save(newLike);

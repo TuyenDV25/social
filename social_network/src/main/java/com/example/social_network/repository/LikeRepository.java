@@ -13,5 +13,5 @@ import com.example.social_network.entity.UserInfo;
 public interface LikeRepository extends JpaRepository<Like, Long> {
 	Long countByPostAndStatus(Post post, Boolean status);
 
-	Like findOneByPostAndUserInfor(Post post, UserInfo userInfo);
+	Like findOneByPostAndUserInfo(Post post, UserInfo userInfo);
 }

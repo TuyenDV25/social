@@ -25,7 +25,7 @@ public class UserInforResDto {
 
 	LocalDate dob;
 
-	private String bio;
+	private String introyourself;
 
 	@JsonProperty("avatar_image")
 	private ImageResDto avatar;

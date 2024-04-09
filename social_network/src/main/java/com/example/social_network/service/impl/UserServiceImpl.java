@@ -104,4 +104,9 @@ public class UserServiceImpl implements UserService {
 		userInfoRepository.save(userInfo);
 	}
 
+	@Override
+    public UserInfo findOneById(Long id) {
+        return userInfoRepository.findOneById(id);
+    }
+
 }

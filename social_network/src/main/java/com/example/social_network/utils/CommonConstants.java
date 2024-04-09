@@ -29,6 +29,12 @@ public class CommonConstants {
 	public static final String LIST_REQUEST = "get list request successfully";
 	
 	public static final String ADD_REQUEST_FRIEND_SUCCESS = "add request friend successfully";
+	
+	public static final String ACCEPT_REQUEST_FRIEND_SUCCESS = "accept request friend successfully";
+	
+	public static final String REMOVE_REQUEST_FRIEND_SUCCESS = "remove friend request successfully";
+	
+	public static final String REMOVE_FRIEND_SUCCESS = "remove friend successfully";
 
 	public static final String USER_EXISTED = "UserName đã tồn tại";
 
@@ -37,8 +43,6 @@ public class CommonConstants {
 	public static final String GENERATE_OTP_SUCCESS = "Đã tạo OTP thành công";
 
 	public static final String SIGN_UP_SUCCESS = "Đăng nhập thành công";
-
-	public static final int PRIVACY_ONLYME = 3;
 
 	public static final String REQUEST_RESET_PASSWORD_SUCCESS = "đã send link tới mail để tạo mới mật khẩu";
 

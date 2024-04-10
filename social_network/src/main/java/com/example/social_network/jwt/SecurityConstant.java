@@ -8,6 +8,6 @@ public class SecurityConstant {
 	
 	public static final long PASSWORD_RESET_EXPIRATION_TIME = 1800000;
 	
-	public static final String URL_AUTH = "http://localhost:8080/auth/";
+	public static final String URL_AUTH = "http://localhost:8080/api/v1/auth/";
 
 }

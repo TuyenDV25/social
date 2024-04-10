@@ -46,11 +46,11 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/auth/welcome", "/auth/register", "/auth/generateOtp").permitAll()
-						.requestMatchers(HttpMethod.POST, "/auth/password-reset-request", "/auth/password-reset",
-								"/auth/authenticate")
+						.requestMatchers( "api/v1/auth/register", "api/v1/auth/generateOtp", "api/v1/report/download").permitAll()
+						.requestMatchers(HttpMethod.POST, "api/v1/auth/password-reset-request", "api/v1/auth/password-reset",
+								"api/v1/auth/authenticate")
 						.permitAll()
-						.requestMatchers("/auth/user/**").authenticated().requestMatchers("/auth/admin/**")
+						.requestMatchers("api/v1/auth/user/**").authenticated().requestMatchers("api/v1/auth/admin/**")
 						.authenticated().anyRequest().authenticated())
 				.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

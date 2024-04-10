@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
  * TuyenDV
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("api/v1/user")
 public class UserController {
 
 	@Autowired

@@ -29,6 +29,7 @@ public enum ErrorCode {
 	REMOVE_REQUEST_TO_FRIEND(1013, "can not remove request when have been friend", HttpStatus.BAD_REQUEST),
 	ADD_REQUEST_AGAIN_TO_FRIEND(1013, "you have send request to your friend", HttpStatus.BAD_REQUEST),
 	REMOVE_REQUEST_AGAIN_TO_FRIEND(1013, "you have not send request", HttpStatus.BAD_REQUEST),
+	ERROR_IMPORT_DATA_EXCEL(1001,"fail to import data to Excel file",HttpStatus.BAD_REQUEST),
 	COMMENT_UPLOAD_WRONG(1013, "comment must have at least content or file", HttpStatus.BAD_REQUEST),;
 
 	ErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -54,7 +54,7 @@ public class CommentController {
 	@PostMapping("/delete/{id}")
 	public BaseResponse<?> deletePost(@PathVariable("id") Long idComment) {
 		commentService.delete(idComment);
-		return BaseResponse.builder().result(null).message(CommonConstants.COMMENT_DELETE_SUCCESS).build();
+		return BaseResponse.builder().message(CommonConstants.COMMENT_DELETE_SUCCESS).build();
 	}
 
 	@PostMapping("all/{id}")

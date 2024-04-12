@@ -1,22 +1,31 @@
 package com.example.social_network.dto.comment;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.social_network.dto.AbstractDto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentReqPostDto {
-	
+public class CommentReqPostDto extends AbstractDto {
+
 	Long id;
 
 	private String content;
 
-	@JsonProperty("image")
-	private MultipartFile uploadFile;
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 }

@@ -19,8 +19,9 @@ import com.example.social_network.dto.auth.OtpResDto;
 import com.example.social_network.dto.auth.PasswordResetReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestResDto;
-import com.example.social_network.dto.auth.PasswordResetResDto;
 import com.example.social_network.dto.auth.RegistUserRepDto;
+import com.example.social_network.dto.user.UserInforResDto;
+import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
 import com.example.social_network.entity.PasswordResetToken;
 import com.example.social_network.entity.UserInfo;
 import com.example.social_network.exception.AppException;
@@ -53,9 +54,12 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	private OTPService otpService;
+	
+	@Autowired
+	private UserInfoResponseUtils userInfoResponseUtils;
 
 	@Override
-	public void insertUser(RegistUserRepDto reqDto) {
+	public UserInforResDto insertUser(RegistUserRepDto reqDto) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		reqDto.setPassword(encoder.encode(reqDto.getPassword()));
 		UserInfo userInfor = modelMapper.map(reqDto, UserInfo.class);
@@ -66,6 +70,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new AppException(ErrorCode.USER_EXISTED);
 		}
 		userInfoRepository.save(userInfor);
+		return userInfoResponseUtils.convert(userInfor);
 	}
 
 	@Override
@@ -89,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public PasswordResetResDto resetNewPassword(PasswordResetReqDto reqDto) {
+	public void resetNewPassword(PasswordResetReqDto reqDto) {
 		if (jwtUtils.isTokenExpired(reqDto.getToken())) {
 			throw new AppException(ErrorCode.TOKEN_EXPIRED);
 		}
@@ -110,8 +115,6 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		passwordResetTokenReponsitory.delete(passwordResetTokenEntity);
-
-		return new PasswordResetResDto();
 	}
 
 	@Override

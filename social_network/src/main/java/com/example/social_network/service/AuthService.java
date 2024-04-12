@@ -7,15 +7,15 @@ import com.example.social_network.dto.auth.OtpResDto;
 import com.example.social_network.dto.auth.PasswordResetReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestResDto;
-import com.example.social_network.dto.auth.PasswordResetResDto;
 import com.example.social_network.dto.auth.RegistUserRepDto;
+import com.example.social_network.dto.user.UserInforResDto;
 
 public interface AuthService {
-	public void insertUser(RegistUserRepDto reqDto);
+	public UserInforResDto insertUser(RegistUserRepDto reqDto);
 
 	public PasswordResetRequestResDto requestPasswordReset(PasswordResetRequestReqDto reqDto);
 
-	public PasswordResetResDto resetNewPassword(PasswordResetReqDto reqDto);
+	public void resetNewPassword(PasswordResetReqDto reqDto);
 
 	public OtpResDto generateOTP(OtpReqDto reqDto);
 

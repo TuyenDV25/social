@@ -111,15 +111,13 @@ public class CommentServiceImpl implements CommentService {
 					imageE.setComment(comment);
 					imageService.save(imageE);
 					imageList.add(imageE);
-
 				});
 			}
-
 			comment.getImages().addAll(imageList);
 		}
 		comment.setContent(reqDto.getContent());
 
-		if (StringUtils.isBlank(comment.getContent()) && reqDto.getUploadFile() == null) {
+		if (StringUtils.isBlank(comment.getContent()) &&(comment.getImages() == null || comment.getImages().size() < 1)) {
 			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
 		}
 

@@ -13,9 +13,8 @@ import com.example.social_network.dto.auth.OtpResDto;
 import com.example.social_network.dto.auth.PasswordResetReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestResDto;
-import com.example.social_network.dto.auth.PasswordResetResDto;
 import com.example.social_network.dto.auth.RegistUserRepDto;
-import com.example.social_network.dto.auth.RegistUserResDto;
+import com.example.social_network.dto.user.UserInforResDto;
 import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.AuthService;
 import com.example.social_network.utils.CommonConstants;
@@ -39,9 +38,11 @@ public class AuthController {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = RegistUserRepDto.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id account", content = @Content) })
 	@PostMapping("/register")
-	public BaseResponse<RegistUserResDto> register(@RequestBody @Valid RegistUserRepDto userInfo) {
-		service.insertUser(userInfo);
-		return BaseResponse.<RegistUserResDto>builder().message(CommonConstants.REGISTER_SUCCESS).build();
+	public BaseResponse<UserInforResDto> register(@RequestBody @Valid RegistUserRepDto userInfo) {
+		UserInforResDto resDto = service.insertUser(userInfo);
+		return BaseResponse.<UserInforResDto>builder()
+				.result(resDto)
+				.message(CommonConstants.REGISTER_SUCCESS).build();
 	}
 
 	@PostMapping("/generateOtp")
@@ -64,10 +65,9 @@ public class AuthController {
 	}
 
 	@PostMapping("/password-reset")
-	public BaseResponse<PasswordResetResDto> resetNewPassword(@RequestBody PasswordResetReqDto reqDto) {
-		PasswordResetResDto restDto = service.resetNewPassword(reqDto);
-		return BaseResponse.<PasswordResetResDto>builder().result(restDto)
-				.message(CommonConstants.RESET_PASSWORD_SUCCESS).build();
+	public BaseResponse<?> resetNewPassword(@RequestBody PasswordResetReqDto reqDto) {
+		service.resetNewPassword(reqDto);
+		return BaseResponse.builder().message(CommonConstants.RESET_PASSWORD_SUCCESS).build();
 	}
 
 }

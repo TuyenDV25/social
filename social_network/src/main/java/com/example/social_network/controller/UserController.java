@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.social_network.dto.user.UserInfoListPostReqDto;
 import com.example.social_network.dto.user.UserInfoListPostResDto;
 import com.example.social_network.dto.user.UserInfoPutReqDto;
-import com.example.social_network.dto.user.UserInfoPutResDto;
 import com.example.social_network.dto.user.UserInforResDto;
 import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.UserService;
@@ -33,15 +32,13 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	/**
-	 * update user information
-	 * 
-	 * @param reqDto {@link UserInfoPutReqDto}
-	 * @return {@link UserInfoPutResDto}
-	 */
 	@PostMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-	public UserInforResDto updateInfo(@RequestPart @Valid UserInfoPutReqDto reqDto, @RequestPart(required = false) MultipartFile[] multipartFile) {
-		return userService.updateInfo(reqDto, multipartFile);
+	public BaseResponse<UserInforResDto> updateInfo(@RequestPart @Valid UserInfoPutReqDto reqDto,
+			@RequestPart(required = false) MultipartFile[] multipartFile) {
+
+		UserInforResDto resDto = userService.updateInfo(reqDto, multipartFile);
+		return BaseResponse.<UserInforResDto>builder().result(resDto).message(CommonConstants.USER_UPDATE_SUCCESS)
+				.build();
 	}
 
 	/**
@@ -50,13 +47,17 @@ public class UserController {
 	 * @return {@link UserInforResDto}
 	 */
 	@GetMapping("/me")
-	public UserInforResDto getInformation() {
-		return userService.getUserInformation();
+	public BaseResponse<UserInforResDto> getInformation() {
+		UserInforResDto resDto = userService.getUserInformation();
+		return BaseResponse.<UserInforResDto>builder().result(resDto).message(CommonConstants.USER_DETAIL_SUCCESS)
+				.build();
 	}
-	
+
 	@GetMapping("/{userId}")
-	public UserInforResDto getInformationById(@PathVariable("userId") Long id) {
-		return userService.findDetailUser(id);
+	public BaseResponse<UserInforResDto> getInformationById(@PathVariable("userId") Long id) {
+		UserInforResDto resDto = userService.findDetailUser(id);
+		return BaseResponse.<UserInforResDto>builder().result(resDto).message(CommonConstants.USER_DETAIL_SUCCESS)
+				.build();
 	}
 
 	/**

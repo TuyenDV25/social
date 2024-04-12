@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostPostResDto createPost(PostPostReqDto reqDto, MultipartFile[] files) {
 
-		if (StringUtils.isBlank(reqDto.getContent()) && reqDto.getUploadFile() == null) {
+		if (StringUtils.isBlank(reqDto.getContent()) && (files == null || files.length < 1)) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
 		}
 
@@ -121,7 +121,6 @@ public class PostServiceImpl implements PostService {
 					imageE.setPost(post);
 					imageService.save(imageE);
 					imageList.add(imageE);
-
 				});
 			}
 

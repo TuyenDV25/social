@@ -1,5 +1,6 @@
 package com.example.social_network.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.post.DeletePostReqDto;
@@ -20,6 +23,7 @@ import com.example.social_network.dto.post.DeletePostResDto;
 import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
+import com.example.social_network.dto.post.PostPutReqDto;
 import com.example.social_network.dto.utils.post.PostResponseUtils;
 import com.example.social_network.entity.Image;
 import com.example.social_network.entity.Post;
@@ -61,7 +65,7 @@ public class PostServiceImpl implements PostService {
 	PostResponseUtils postResponseUtils;
 
 	@Override
-	public PostPostResDto createPost(PostPostReqDto reqDto) {
+	public PostPostResDto createPost(PostPostReqDto reqDto, MultipartFile[] files) {
 
 		if (StringUtils.isBlank(reqDto.getContent()) && reqDto.getUploadFile() == null) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
@@ -69,12 +73,20 @@ public class PostServiceImpl implements PostService {
 
 		Post post = postMapper.dtoToEntity(reqDto);
 
-		if (reqDto.getUploadFile() != null) {
-			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
-			Image image = imageService.findOneById(imageResDto.getId());
-			image.setPost(post);
-			imageService.save(image);
-			post.setImage(image);
+		if (files != null && files.length > 0) {
+			List<ImageResDto> imageResDto = fileService.uploadImage(files);
+			List<Image> imageList = new ArrayList<>();
+			if (!CollectionUtils.isEmpty(imageResDto)) {
+				imageResDto.stream().forEach(imageDto -> {
+					Image imageE = imageService.findOneById(imageDto.getId());
+					imageE.setPost(post);
+					imageService.save(imageE);
+					imageList.add(imageE);
+
+				});
+			}
+
+			post.getImages().addAll(imageList);
 		}
 
 		post.setUserInfo(userInfoRepository
@@ -85,12 +97,12 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostPostResDto update(Long id, PostPostReqDto reqDto) {
+	public PostPostResDto update(PostPostReqDto reqDto, MultipartFile[] files) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
-		Post post = postRepository.findById(id).get();
+		Post post = postRepository.findById(reqDto.getId()).get();
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
@@ -100,18 +112,25 @@ public class PostServiceImpl implements PostService {
 			throw new AppException(ErrorCode.UNAUTHORIZED);
 		}
 
-		if (reqDto.getUploadFile() != null) {
-			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
-			Image image = imageService.findOneById(imageResDto.getId());
-			image.setPost(post);
-			imageService.save(image);
-			post.setImage(image);
-		}
+		if (files != null && files.length > 0) {
+			List<ImageResDto> imageResDto = fileService.uploadImage(files);
+			List<Image> imageList = new ArrayList<>();
+			if (!CollectionUtils.isEmpty(imageResDto)) {
+				imageResDto.stream().forEach(imageDto -> {
+					Image imageE = imageService.findOneById(imageDto.getId());
+					imageE.setPost(post);
+					imageService.save(imageE);
+					imageList.add(imageE);
 
+				});
+			}
+
+			post.getImages().addAll(imageList);
+		}
 		post.setContent(reqDto.getContent());
 		post.setPrivacy(reqDto.getPrivacy());
 
-		if (StringUtils.isBlank(post.getContent()) && post.getImage() == null) {
+		if (StringUtils.isBlank(post.getContent()) && (post.getImages() == null || post.getImages().size() < 1)) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
 		}
 
@@ -180,6 +199,22 @@ public class PostServiceImpl implements PostService {
 								&& post.getPrivacy() != PostType.ONLY_ME.getCode()))
 				.map(postResponseUtils::convert).collect(Collectors.toList());
 		return new PageImpl<>(postResponseList, paging, postResponseList.size());
+	}
+
+	@Override
+	public PostPostResDto updatePrivacy(PostPutReqDto reqDto) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+		Post post = postRepository.findByUserInfoAndId(user, reqDto.getPostId());
+		if (post == null) {
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
+		}
+		post.setPrivacy(reqDto.getPrivacy());
+		postRepository.save(post);
+
+		return postResponseUtils.convert(post);
 	}
 
 }

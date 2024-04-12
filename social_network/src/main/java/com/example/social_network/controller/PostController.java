@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.post.DeletePostReqDto;
 import com.example.social_network.dto.post.DeletePostResDto;
@@ -18,6 +19,7 @@ import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostListResDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
+import com.example.social_network.dto.post.PostPutReqDto;
 import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
@@ -37,10 +39,10 @@ public class PostController {
 	 * @param reqDto {@link PostPostReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	BaseResponse<PostPostResDto> createPost(PostPostReqDto reqDto) {
-		PostPostResDto resDto = postService.createPost(reqDto);
+	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	BaseResponse<PostPostResDto> createPost(@RequestPart @Valid PostPostReqDto reqDto,
+			@RequestPart(required = false) MultipartFile[] multipartFile) {
+		PostPostResDto resDto = postService.createPost(reqDto, multipartFile);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_CREATE_SUCCESS)
 				.build();
 	}
@@ -51,12 +53,19 @@ public class PostController {
 	 * @param reqDto {@link PostPostReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PutMapping(value = "/update/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	BaseResponse<PostPostResDto> updatePost(@PathVariable("id") Long id, PostPostReqDto reqDto) {
-		PostPostResDto resDto = postService.update(id, reqDto);
+	@PutMapping(value = "/update/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	BaseResponse<PostPostResDto> updatePost(@RequestPart @Valid PostPostReqDto reqDto,
+			@RequestPart(required = false) MultipartFile[] multipartFile) {
+		PostPostResDto resDto = postService.update(reqDto, multipartFile);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_UPDATE_SUCCESS)
 				.build();
+	}
+
+	@PutMapping(value = "/update-privacy")
+	BaseResponse<PostPostResDto> updatePrivacy(@Valid @RequestBody PostPutReqDto reqDto) {
+		PostPostResDto resDto = postService.updatePrivacy(reqDto);
+		return BaseResponse.<PostPostResDto>builder().result(resDto)
+				.message(CommonConstants.POST_UPDATE_PRIVACY_SUCCESS).build();
 	}
 
 	/**
@@ -100,7 +109,7 @@ public class PostController {
 		return BaseResponse.<PostListResDto>builder().result(PostListResDto.builder().listPost(result).build())
 				.message(CommonConstants.USER_SEARCH_SUCCES).build();
 	}
-	
+
 	/**
 	 * list post contain content is searched
 	 * 

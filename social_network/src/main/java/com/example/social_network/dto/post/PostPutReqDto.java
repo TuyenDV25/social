@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostListReqDto {
+public class PostPutReqDto {
 	
-	private int pageNo;
+	private Long postId;
 
-	private int pageSize;
+	private int privacy;
 
-	private String content;
 }

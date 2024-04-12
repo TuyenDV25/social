@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.social_network.entity.Comment;
 import com.example.social_network.entity.Post;
 import com.example.social_network.entity.UserInfo;
 
@@ -19,6 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	Post findByUserInfoAndId(UserInfo userInfo, Long id);
 
 	Post findOneById(Long id);
+	
+	Post findByComments(Comment comment);
 
 	Page<Post> findByUserInfo(UserInfo userInfo, Pageable pageable);
 	

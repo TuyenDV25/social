@@ -13,15 +13,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.user.UserInfoListPostReqDto;
 import com.example.social_network.dto.user.UserInfoPutReqDto;
-import com.example.social_network.dto.user.UserInfoPutResDto;
 import com.example.social_network.dto.user.UserInforResDto;
 import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
 import com.example.social_network.entity.Image;
 import com.example.social_network.entity.UserInfo;
 import com.example.social_network.repository.UserInfoRepository;
+import com.example.social_network.service.FileService;
 import com.example.social_network.service.ImageService;
 import com.example.social_network.service.UserService;
 import com.example.social_network.utils.CommonConstants;
@@ -38,8 +40,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ImageService imageService;
 
+	@Autowired
+	private FileService fileService;
+
 	@Override
-	public UserInfoPutResDto updateInfo(UserInfoPutReqDto reqDto) {
+	public UserInforResDto updateInfo(UserInfoPutReqDto reqDto, MultipartFile[] multipartFile) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -50,7 +55,6 @@ public class UserServiceImpl implements UserService {
 		String dob = reqDto.getBirthDay();
 		String bio = reqDto.getIntroyourself();
 		String gender = reqDto.getGender();
-		Long idAvatarImage = reqDto.getIdAvatarImage();
 
 		if (lastName != null)
 			user.setLastName(lastName);
@@ -71,14 +75,16 @@ public class UserServiceImpl implements UserService {
 				user.setGender(false);
 		}
 
-		if (idAvatarImage != null) {
-			Image image = imageService.findOneById(idAvatarImage);
-			if (image != null) {
-				user.getAvatarImage().add(image);
-			}
+		if (multipartFile != null) {
+			ImageResDto imageResDto = fileService.uploadImage(multipartFile).get(0);
+			Image image = imageService.findOneById(imageResDto.getId());
+			image.setUserInfo(user);
+			imageService.save(image);
+			user.getAvatarImage().add(image);
 		}
+
 		userInfoRepository.save(user);
-		return new UserInfoPutResDto();
+		return userInfoResponseUtils.convert(user);
 	}
 
 	@Override
@@ -105,13 +111,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-    public UserInfo findOneById(Long id) {
-        return userInfoRepository.findOneById(id);
-    }
-	
+	public UserInfo findOneById(Long id) {
+		return userInfoRepository.findOneById(id);
+	}
+
 	@Override
-    public UserInforResDto findDetailUser(Long id) {
-        return userInfoResponseUtils.convert(userInfoRepository.findOneById(id));
-    }
+	public UserInforResDto findDetailUser(Long id) {
+		return userInfoResponseUtils.convert(userInfoRepository.findOneById(id));
+	}
 
 }

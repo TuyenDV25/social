@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserInfoPutReqDto {
 
-	@Length(min = 1, max = 20, message = "Họ phải có độ dài từ 1 đến 20")
+	@Length(min = 3, max = 20, message = "must be from 3 to 20 characters!")
 	@JsonProperty("last_name")
 	private String lastName;
 
-	@Length(min = 1, max = 10, message = "Tên phải có độ dài từ 1 đến 10")
+	@Length(min = 3, max = 20, message = "must be from 3 to 20 characters!")
 	@JsonProperty("first_name")
 	private String firstName;
 
 	@DateTimeFormat(pattern = "yyyyMMdd")
 	private String birthDay;
 
-	@Length(min = 5, max = 100, message = "Giới thiệu bản thân phải có độ dài từ 5 đến 100")
+	@Length(min = 5, max = 100, message = "must be from 5 to 100 characters")
 	private String introyourself;
 
 	private String gender;
@@ -35,7 +35,4 @@ public class UserInfoPutReqDto {
 
 	@JsonProperty("current_city")
 	private Long idCurrentCity;
-
-	@JsonProperty("avatar_image")
-	private Long idAvatarImage;
 }

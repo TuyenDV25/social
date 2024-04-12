@@ -1,5 +1,6 @@
 package com.example.social_network.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.comment.CommentListReqDto;
 import com.example.social_network.dto.comment.CommentReqPostDto;
@@ -58,8 +61,8 @@ public class CommentServiceImpl implements CommentService {
 	 * create comment
 	 */
 	@Override
-	public CommentResDto createComment(CommentReqPostDto reqDto, Long postId) {
-		Post post = postRepository.findOneById(postId);
+	public CommentResDto createComment(CommentReqPostDto reqDto, MultipartFile[] files) {
+		Post post = postRepository.findOneById(reqDto.getId());
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
@@ -71,18 +74,26 @@ public class CommentServiceImpl implements CommentService {
 		comment.setContent(reqDto.getContent());
 		comment.setUser(userInfor);
 		comment.setPost(post);
-		if (reqDto.getUploadFile() != null) {
-			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
-			Image image = imageService.findOneById(imageResDto.getId());
-			image.setComment(comment);
-			imageService.save(image);
-			comment.setImage(image);
+		if (files != null && files.length > 0) {
+			List<ImageResDto> imageResDto = fileService.uploadImage(files);
+			List<Image> imageList = new ArrayList<>();
+			if (!CollectionUtils.isEmpty(imageResDto)) {
+				imageResDto.stream().forEach(imageDto -> {
+					Image imageE = imageService.findOneById(imageDto.getId());
+					imageE.setComment(comment);
+					imageService.save(imageE);
+					imageList.add(imageE);
+
+				});
+			}
+
+			comment.getImages().addAll(imageList);
 		}
 		return commentResponseUtils.convert(commentRepository.save(comment));
 	}
 
 	@Override
-	public CommentResDto updateComment(CommentReqPutDto reqDto) {
+	public CommentResDto updateComment(CommentReqPutDto reqDto, MultipartFile[] files) {
 
 		Comment comment = commentRepository.findOneById(reqDto.getId());
 		UserInfo userInfor = userInfoRepository
@@ -91,13 +102,20 @@ public class CommentServiceImpl implements CommentService {
 		if (comment == null || commentRepository.findByUserAndId(userInfor, reqDto.getId()) == null) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}
-		if (reqDto.getUploadFile() != null) {
-			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
+		if (files != null && files.length > 0) {
+			List<ImageResDto> imageResDto = fileService.uploadImage(files);
+			List<Image> imageList = new ArrayList<>();
+			if (!CollectionUtils.isEmpty(imageResDto)) {
+				imageResDto.stream().forEach(imageDto -> {
+					Image imageE = imageService.findOneById(imageDto.getId());
+					imageE.setComment(comment);
+					imageService.save(imageE);
+					imageList.add(imageE);
 
-			Image image = imageService.findOneById(imageResDto.getId());
-			image.setComment(comment);
-			imageService.save(image);
-			comment.setImage(image);
+				});
+			}
+
+			comment.getImages().addAll(imageList);
 		}
 		comment.setContent(reqDto.getContent());
 

@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public PasswordResetRequestResDto requestPasswordReset(PasswordResetRequestReqDto reqDto) {
-		UserInfo userInfoEntity = userInfoRepository.findByUsername(reqDto.getEmail())
+		UserInfo userInfoEntity = userInfoRepository.findByUsername(reqDto.getUsername())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
 		String token = jwtUtils.generateToken(userInfoEntity.getUsername(),

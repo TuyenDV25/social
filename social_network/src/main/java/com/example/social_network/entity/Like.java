@@ -17,6 +17,10 @@ public class Like extends AbstractEntity {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
+	@ManyToOne
+	@JoinColumn(name = "comment_id")
+	private Comment comment;
+
 	public UserInfo getUserInfo() {
 		return userInfo;
 	}
@@ -31,6 +35,14 @@ public class Like extends AbstractEntity {
 
 	public void setPost(Post post) {
 		this.post = post;
+	}
+
+	public Comment getComment() {
+		return comment;
+	}
+
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 
 }

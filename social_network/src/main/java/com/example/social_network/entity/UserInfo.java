@@ -43,7 +43,7 @@ public class UserInfo extends AbstractEntity {
 
 	private String introyourself;
 
-	boolean gender;
+	private boolean gender;
 
 	@OneToOne(mappedBy = "userInfo")
 	@JsonBackReference
@@ -54,9 +54,6 @@ public class UserInfo extends AbstractEntity {
 
 	@OneToMany(mappedBy = "userInfo")
 	private List<Post> posts = new ArrayList<>();
-
-	@OneToMany(mappedBy = "userInfo")
-	private List<Share> shares = new ArrayList<>();
 
 	@OneToMany(mappedBy = "userInfo")
 	private List<Like> likes = new ArrayList<>();
@@ -163,14 +160,6 @@ public class UserInfo extends AbstractEntity {
 		this.posts = posts;
 	}
 
-	public List<Share> getShares() {
-		return shares;
-	}
-
-	public void setShares(List<Share> shares) {
-		this.shares = shares;
-	}
-
 	public List<Like> getLikes() {
 		return likes;
 	}
@@ -194,5 +183,4 @@ public class UserInfo extends AbstractEntity {
 	public void setListFriend(List<Friend> listFriend) {
 		this.listFriend = listFriend;
 	}
-
 }

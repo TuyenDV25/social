@@ -22,9 +22,20 @@ public class LikeController {
 	 * 
 	 * @param postId
 	 */
-	@PostMapping("/{postId}")
-	public BaseResponse<?> like(@PathVariable("postId") Long postId) {
-		likeService.like(postId);
+	@PostMapping("/post/{postId}")
+	public BaseResponse<?> likePost(@PathVariable("postId") Long postId) {
+		likeService.likePost(postId);
+		return BaseResponse.builder().message(CommonConstants.LIKE_PROCESS).build();
+	}
+	
+	/**
+	 * like or dislike comment
+	 * 
+	 * @param commentId
+	 */
+	@PostMapping("/comment/{commentId}")
+	public BaseResponse<?> likeComment(@PathVariable("commentId") Long commentId) {
+		likeService.likeComment(commentId);
 		return BaseResponse.builder().message(CommonConstants.LIKE_PROCESS).build();
 	}
 

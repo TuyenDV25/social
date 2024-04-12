@@ -28,7 +28,7 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 	public CommentResDto convert(Comment entity) {
 		CommentResDto resDto = new CommentResDto();
 		resDto.setContent(entity.getContent());
-		resDto.setImage(imageMapper.entityToDto(entity.getImage()));
+		resDto.setImage(imageMapper.dtoListToEntityList(entity.getImages()));
 		resDto.setUserInfo(userInfoResponseUtils.convert(entity.getUser()));
 		return resDto;
 	}
@@ -38,7 +38,7 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 		List<CommentResDto> listResDto = new ArrayList<>();
 		listEntity.stream().forEach(entity -> {
 			listResDto.add(CommentResDto.builder().content(entity.getContent())
-					.image(imageMapper.entityToDto(entity.getImage()))
+					.image(imageMapper.dtoListToEntityList(entity.getImages()))
 					.userInfo(userInfoResponseUtils.convert(entity.getUser())).build());
 		});
 		return listResDto;

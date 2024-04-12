@@ -37,6 +37,8 @@ public class CommonConstants {
 	public static final String REMOVE_FRIEND_SUCCESS = "remove friend successfully";
 	
 	public static final String TIME_LINE_SUCCESS = "get timeline successfully";
+	
+	public static final String POST_UPDATE_PRIVACY_SUCCESS = "update Post privacy successfully";
 
 	public static final String USER_EXISTED = "UserName đã tồn tại";
 

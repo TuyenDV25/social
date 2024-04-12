@@ -3,6 +3,8 @@ package com.example.social_network.entity;
 import java.util.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +26,7 @@ public abstract class AbstractEntity {
 	private Date createdDate;
 
 	@Column(updatable = true)
-	@CreationTimestamp
+	@UpdateTimestamp(source = SourceType.DB)
 	private Date updateDate;
 
 	protected Boolean deleted = Boolean.FALSE;

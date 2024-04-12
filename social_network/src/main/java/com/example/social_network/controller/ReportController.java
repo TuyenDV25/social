@@ -23,7 +23,7 @@ public class ReportController {
 
 	@GetMapping("/download")
 	public ResponseEntity<Resource> getFile() {
-		String filename = "tutorials.xlsx";
+		String filename = "weeklyReport.xlsx";
 		InputStreamResource file = new InputStreamResource(reportService.load());
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)

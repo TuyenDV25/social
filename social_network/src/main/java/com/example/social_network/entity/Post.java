@@ -6,15 +6,12 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,7 +28,7 @@ public class Post extends AbstractEntity {
 	private String content;
 
 	/**
-	 * 1: public 2: friend 3: only me
+	 * 1: public 3: only me
 	 */
 	@Column
 	private Integer privacy;
@@ -39,15 +36,11 @@ public class Post extends AbstractEntity {
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
 	private List<Comment> comments = new ArrayList<>();
 
-	@OneToOne(mappedBy = "post")
-	@JsonBackReference
-	private Image image;
+	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+	private List<Image> images;
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
 	private List<Like> likes = new ArrayList<>();
-
-	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	private List<Share> shares = new ArrayList<>();
 
 	public UserInfo getUserInfo() {
 		return userInfo;
@@ -81,12 +74,12 @@ public class Post extends AbstractEntity {
 		this.comments = comments;
 	}
 
-	public Image getImage() {
-		return image;
+	public List<Image> getImages() {
+		return images;
 	}
 
-	public void setImage(Image image) {
-		this.image = image;
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 
 	public List<Like> getLikes() {
@@ -95,14 +88,6 @@ public class Post extends AbstractEntity {
 
 	public void setLikes(List<Like> likes) {
 		this.likes = likes;
-	}
-
-	public List<Share> getShares() {
-		return shares;
-	}
-
-	public void setShares(List<Share> shares) {
-		this.shares = shares;
 	}
 
 }

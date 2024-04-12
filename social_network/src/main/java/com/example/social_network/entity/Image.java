@@ -1,12 +1,8 @@
 package com.example.social_network.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,14 +15,12 @@ public class Image extends AbstractEntity {
 	@JoinColumn(name = "userInfo_id")
 	private UserInfo userInfo;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "post_id", referencedColumnName = "id")
-	@JsonManagedReference
+	@ManyToOne
+	@JoinColumn(name = "post_id")
 	private Post post;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "comment_id", referencedColumnName = "id")
-	@JsonManagedReference
+	@ManyToOne
+	@JoinColumn(name = "comment_id")
 	private Comment comment;
 
 	public String getLinkImage() {

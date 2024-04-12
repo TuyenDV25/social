@@ -12,7 +12,6 @@ import com.example.social_network.mapper.image.ImageResponseMapper;
 import com.example.social_network.mapper.post.PostResponseMapper;
 import com.example.social_network.repository.CommentRepository;
 import com.example.social_network.repository.LikeRepository;
-import com.example.social_network.repository.ShareRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -33,9 +32,6 @@ public class PostResponseUtils extends ResponseUtilsAdapter<Post, PostPostResDto
 	private CommentRepository commentRepository;
 
 	@Autowired
-	private ShareRepository shareRepository;
-
-	@Autowired
 	private CommentResponseUtils commentResponseUtils;
 
 	@Autowired
@@ -44,10 +40,9 @@ public class PostResponseUtils extends ResponseUtilsAdapter<Post, PostPostResDto
 	@Override
 	public PostPostResDto convert(Post entity) {
 		PostPostResDto resDto = postMapper.entityToDto(entity);
-		resDto.setImage(imageMapper.entityToDto(entity.getImage()));
+		resDto.setImage(imageMapper.dtoListToEntityList(entity.getImages()));
 		resDto.setLikeCount(likeRepository.countByPost(entity));
 		resDto.setCommentCount(commentRepository.countByPost(entity));
-		resDto.setShareCount(shareRepository.countByPost(entity));
 		resDto.setComments(commentResponseUtils.convert(entity.getComments()));
 		resDto.setLikes(likeResponseUtils.convert(entity.getLikes()));
 		return resDto;

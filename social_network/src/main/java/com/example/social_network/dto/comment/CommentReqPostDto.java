@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentReqPostDto {
+	
+	Long id;
 
 	private String content;
 

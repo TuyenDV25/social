@@ -1,15 +1,17 @@
 package com.example.social_network.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,9 +31,11 @@ public class Comment extends AbstractEntity {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	@OneToOne(mappedBy = "comment")
-	@JsonBackReference
-	private Image image;
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+	private List<Image> images;
+
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+	private List<Like> likes = new ArrayList<>();
 
 	public String getContent() {
 		return content;
@@ -57,11 +61,19 @@ public class Comment extends AbstractEntity {
 		this.post = post;
 	}
 
-	public Image getImage() {
-		return image;
+	public List<Image> getImages() {
+		return images;
 	}
 
-	public void setImage(Image image) {
-		this.image = image;
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+
+	public List<Like> getLikes() {
+		return likes;
+	}
+
+	public void setLikes(List<Like> likes) {
+		this.likes = likes;
 	}
 }

@@ -2,12 +2,15 @@ package com.example.social_network.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.user.UserInfoListPostReqDto;
 import com.example.social_network.dto.user.UserInfoListPostResDto;
@@ -36,9 +39,9 @@ public class UserController {
 	 * @param reqDto {@link UserInfoPutReqDto}
 	 * @return {@link UserInfoPutResDto}
 	 */
-	@PostMapping("/update")
-	public UserInfoPutResDto updateInfo(@Valid @RequestBody UserInfoPutReqDto reqDto) {
-		return userService.updateInfo(reqDto);
+	@PostMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	public UserInforResDto updateInfo(@RequestPart @Valid UserInfoPutReqDto reqDto, @RequestPart(required = false) MultipartFile[] multipartFile) {
+		return userService.updateInfo(reqDto, multipartFile);
 	}
 
 	/**

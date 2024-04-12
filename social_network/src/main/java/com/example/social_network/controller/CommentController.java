@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.comment.CommentListReqDto;
 import com.example.social_network.dto.comment.CommentListResDto;
@@ -35,18 +37,16 @@ public class CommentController {
 	 * @param idPost
 	 * @return {@link CommentResDto}
 	 */
-	@PostMapping(value = "/create/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public BaseResponse<CommentResDto> createComment(CommentReqPostDto reqDto, @PathVariable("id") Long idPost) {
-		CommentResDto resDto = commentService.createComment(reqDto, idPost);
+	@PostMapping(value = "/create/", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	public BaseResponse<CommentResDto> createComment(@RequestPart @Valid CommentReqPostDto reqDto, @RequestPart(required = false) MultipartFile[] multipartFile) {
+		CommentResDto resDto = commentService.createComment(reqDto, multipartFile);
 		return BaseResponse.<CommentResDto>builder().result(resDto).message(CommonConstants.COMMENT_CREATE_SUCCESS)
 				.build();
 	}
 
-	@PutMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public BaseResponse<CommentResDto> updateComment(CommentReqPutDto reqDto) {
-		CommentResDto resDto = commentService.updateComment(reqDto);
+	@PutMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	public BaseResponse<CommentResDto> updateComment(@RequestPart @Valid CommentReqPutDto reqDto, @RequestPart(required = false) MultipartFile[] multipartFile) {
+		CommentResDto resDto = commentService.updateComment(reqDto, multipartFile);
 		return BaseResponse.<CommentResDto>builder().result(resDto).message(CommonConstants.COMMENT_UPDATE_SUCCESS)
 				.build();
 	}

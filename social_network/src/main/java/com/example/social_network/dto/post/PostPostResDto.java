@@ -22,16 +22,13 @@ public class PostPostResDto {
 	private Integer privacy;
 
 	@JsonProperty("image")
-	private ImageResDto image;
+	private List<ImageResDto> image;
 
 	@JsonProperty("likes")
 	private List<LikeResDto> likes = new ArrayList<>();
 
 	@JsonProperty("comment")
 	private List<CommentResDto> comments = new ArrayList<>();
-
-	@JsonProperty("share_count")
-	private Long shareCount;
 
 	@JsonProperty("like_count")
 	private Long likeCount;

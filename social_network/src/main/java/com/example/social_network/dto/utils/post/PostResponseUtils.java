@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.dto.utils.ResponseUtilsAdapter;
+import com.example.social_network.dto.utils.comment.CommentResponseUtils;
+import com.example.social_network.dto.utils.like.LikeResponseUtils;
 import com.example.social_network.entity.Post;
 import com.example.social_network.mapper.image.ImageResponseMapper;
 import com.example.social_network.mapper.post.PostResponseMapper;
@@ -33,13 +35,21 @@ public class PostResponseUtils extends ResponseUtilsAdapter<Post, PostPostResDto
 	@Autowired
 	private ShareRepository shareRepository;
 
+	@Autowired
+	private CommentResponseUtils commentResponseUtils;
+
+	@Autowired
+	private LikeResponseUtils likeResponseUtils;
+
 	@Override
 	public PostPostResDto convert(Post entity) {
 		PostPostResDto resDto = postMapper.entityToDto(entity);
 		resDto.setImage(imageMapper.entityToDto(entity.getImage()));
-		resDto.setLikeCount(likeRepository.countByPostAndStatus(entity, true));
+		resDto.setLikeCount(likeRepository.countByPost(entity));
 		resDto.setCommentCount(commentRepository.countByPost(entity));
 		resDto.setShareCount(shareRepository.countByPost(entity));
+		resDto.setComments(commentResponseUtils.convert(entity.getComments()));
+		resDto.setLikes(likeResponseUtils.convert(entity.getLikes()));
 		return resDto;
 	}
 

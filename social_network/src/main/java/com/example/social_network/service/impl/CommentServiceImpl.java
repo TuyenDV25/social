@@ -20,16 +20,17 @@ import com.example.social_network.dto.comment.CommentResDto;
 import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.utils.comment.CommentResponseUtils;
 import com.example.social_network.entity.Comment;
+import com.example.social_network.entity.Image;
 import com.example.social_network.entity.Post;
 import com.example.social_network.entity.UserInfo;
 import com.example.social_network.exception.AppException;
 import com.example.social_network.exception.ErrorCode;
-import com.example.social_network.mapper.image.ImageResponseMapper;
 import com.example.social_network.repository.CommentRepository;
 import com.example.social_network.repository.PostRepository;
 import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.CommentService;
 import com.example.social_network.service.FileService;
+import com.example.social_network.service.ImageService;
 import com.example.social_network.utils.CommonConstants;
 
 @Service
@@ -48,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
 	private FileService fileService;
 
 	@Autowired
-	private ImageResponseMapper imageMapper;
+	ImageService imageService;
 
 	@Autowired
 	CommentResponseUtils commentResponseUtils;
@@ -71,7 +72,11 @@ public class CommentServiceImpl implements CommentService {
 		comment.setUser(userInfor);
 		comment.setPost(post);
 		if (reqDto.getUploadFile() != null) {
-			comment.setImage(imageMapper.dtoToEntity(fileService.uploadImage(reqDto.getUploadFile())));
+			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
+			Image image = imageService.findOneById(imageResDto.getId());
+			image.setComment(comment);
+			imageService.save(image);
+			comment.setImage(image);
 		}
 		return commentResponseUtils.convert(commentRepository.save(comment));
 	}
@@ -89,7 +94,10 @@ public class CommentServiceImpl implements CommentService {
 		if (reqDto.getUploadFile() != null) {
 			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
 
-			comment.setImage(imageMapper.dtoToEntity(imageResDto));
+			Image image = imageService.findOneById(imageResDto.getId());
+			image.setComment(comment);
+			imageService.save(image);
+			comment.setImage(image);
 		}
 		comment.setContent(reqDto.getContent());
 

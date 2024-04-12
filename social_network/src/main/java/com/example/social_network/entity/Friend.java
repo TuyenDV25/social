@@ -1,10 +1,15 @@
 package com.example.social_network.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
+@SQLDelete(sql = "UPDATE friend SET deleted = true WHERE id=?")
+@SQLRestriction(value = "deleted = false")
 public class Friend extends AbstractEntity {
 
 	@ManyToOne

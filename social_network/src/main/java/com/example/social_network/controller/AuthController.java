@@ -20,6 +20,11 @@ import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.AuthService;
 import com.example.social_network.utils.CommonConstants;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
@@ -29,6 +34,10 @@ public class AuthController {
 	@Autowired
 	private AuthService service;
 
+	@Operation(summary = "sign up")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "register succesfully", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = RegistUserRepDto.class)) }),
+			@ApiResponse(responseCode = "400", description = "Invalid id account", content = @Content) })
 	@PostMapping("/register")
 	public BaseResponse<RegistUserResDto> register(@RequestBody @Valid RegistUserRepDto userInfo) {
 		service.insertUser(userInfo);

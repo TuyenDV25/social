@@ -1,5 +1,8 @@
 package com.example.social_network.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -8,6 +11,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "share")
+@SQLDelete(sql = "UPDATE share SET deleted = true WHERE id=?")
+@SQLRestriction(value = "deleted = false")
 public class Share extends AbstractEntity {
 
 	@Column

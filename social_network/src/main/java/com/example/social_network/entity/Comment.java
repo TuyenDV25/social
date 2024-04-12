@@ -1,5 +1,8 @@
 package com.example.social_network.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -11,6 +14,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "comment")
+@SQLDelete(sql = "UPDATE comment SET deleted = true WHERE id=?")
+@SQLRestriction(value = "deleted = false")
 public class Comment extends AbstractEntity {
 
 	@Column
@@ -59,5 +64,4 @@ public class Comment extends AbstractEntity {
 	public void setImage(Image image) {
 		this.image = image;
 	}
-
 }

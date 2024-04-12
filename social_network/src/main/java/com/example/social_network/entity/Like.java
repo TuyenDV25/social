@@ -1,14 +1,11 @@
 package com.example.social_network.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Builder;
 
 @Entity
-@Builder
 @Table(name = "likes")
 public class Like extends AbstractEntity {
 
@@ -19,9 +16,6 @@ public class Like extends AbstractEntity {
 	@ManyToOne
 	@JoinColumn(name = "post_id")
 	private Post post;
-
-	@Column
-	private boolean status;
 
 	public UserInfo getUserInfo() {
 		return userInfo;
@@ -37,14 +31,6 @@ public class Like extends AbstractEntity {
 
 	public void setPost(Post post) {
 		this.post = post;
-	}
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
 	}
 
 }

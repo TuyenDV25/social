@@ -108,5 +108,10 @@ public class UserServiceImpl implements UserService {
     public UserInfo findOneById(Long id) {
         return userInfoRepository.findOneById(id);
     }
+	
+	@Override
+    public UserInforResDto findDetailUser(Long id) {
+        return userInfoResponseUtils.convert(userInfoRepository.findOneById(id));
+    }
 
 }

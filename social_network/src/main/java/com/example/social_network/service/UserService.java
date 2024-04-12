@@ -17,6 +17,8 @@ public interface UserService {
 	Page<UserInforResDto> searchUserByName(UserInfoListPostReqDto reqDto);
 
 	void updateUserInfo(UserInfo userInfo);
-	
+
 	UserInfo findOneById(Long id);
+
+	UserInforResDto findDetailUser(Long id);
 }

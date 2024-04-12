@@ -21,6 +21,7 @@ import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.dto.utils.post.PostResponseUtils;
+import com.example.social_network.entity.Image;
 import com.example.social_network.entity.Post;
 import com.example.social_network.entity.UserInfo;
 import com.example.social_network.enumdef.PostType;
@@ -31,6 +32,7 @@ import com.example.social_network.mapper.post.PostRequestMapper;
 import com.example.social_network.repository.PostRepository;
 import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.FileService;
+import com.example.social_network.service.ImageService;
 import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
 
@@ -45,6 +47,9 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	FileService fileService;
+
+	@Autowired
+	ImageService imageService;
 
 	@Autowired
 	UserInfoRepository userInfoRepository;
@@ -66,8 +71,10 @@ public class PostServiceImpl implements PostService {
 
 		if (reqDto.getUploadFile() != null) {
 			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
-
-			post.setImage(imageMapper.dtoToEntity(imageResDto));
+			Image image = imageService.findOneById(imageResDto.getId());
+			image.setPost(post);
+			imageService.save(image);
+			post.setImage(image);
 		}
 
 		post.setUserInfo(userInfoRepository
@@ -95,7 +102,10 @@ public class PostServiceImpl implements PostService {
 
 		if (reqDto.getUploadFile() != null) {
 			ImageResDto imageResDto = fileService.uploadImage(reqDto.getUploadFile());
-			post.setImage(imageMapper.dtoToEntity(imageResDto));
+			Image image = imageService.findOneById(imageResDto.getId());
+			image.setPost(post);
+			imageService.save(image);
+			post.setImage(image);
 		}
 
 		post.setContent(reqDto.getContent());
@@ -161,7 +171,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostPostResDto> getAllPostByKeyword(PostListReqDto reqDto) {
 		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
-		Page<Post> pagedResult = postRepository.findByContentContains(reqDto.getContent(),paging);
+		Page<Post> pagedResult = postRepository.findByContentContains(reqDto.getContent(), paging);
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 		List<PostPostResDto> postResponseList = pagedResult.stream()

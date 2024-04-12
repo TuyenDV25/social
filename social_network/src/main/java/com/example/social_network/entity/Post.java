@@ -3,6 +3,9 @@ package com.example.social_network.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
@@ -16,6 +19,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "post")
+@SQLDelete(sql = "UPDATE post SET deleted = true WHERE id=?")
+@SQLRestriction(value = "deleted = false")
 public class Post extends AbstractEntity {
 
 	@ManyToOne

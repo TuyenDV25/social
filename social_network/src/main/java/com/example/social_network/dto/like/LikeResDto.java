@@ -1,6 +1,5 @@
-package com.example.social_network.dto.comment;
+package com.example.social_network.dto.like;
 
-import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.user.UserInforResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,13 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentResDto {
-	private String content;
-
-	@JsonProperty("image")
-	private ImageResDto image;
-
+public class LikeResDto {
+	
 	@JsonProperty("userInfo")
 	private UserInforResDto userInfo;
-
 }

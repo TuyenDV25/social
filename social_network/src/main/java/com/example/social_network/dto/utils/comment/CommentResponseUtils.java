@@ -1,5 +1,8 @@
 package com.example.social_network.dto.utils.comment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +31,17 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 		resDto.setImage(imageMapper.entityToDto(entity.getImage()));
 		resDto.setUserInfo(userInfoResponseUtils.convert(entity.getUser()));
 		return resDto;
+	}
+
+	@Override
+	public List<CommentResDto> convert(List<Comment> listEntity) {
+		List<CommentResDto> listResDto = new ArrayList<>();
+		listEntity.stream().forEach(entity -> {
+			listResDto.add(CommentResDto.builder().content(entity.getContent())
+					.image(imageMapper.entityToDto(entity.getImage()))
+					.userInfo(userInfoResponseUtils.convert(entity.getUser())).build());
+		});
+		return listResDto;
 	}
 
 }

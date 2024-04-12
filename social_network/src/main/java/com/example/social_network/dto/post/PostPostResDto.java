@@ -1,6 +1,11 @@
 package com.example.social_network.dto.post;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.social_network.dto.comment.CommentResDto;
 import com.example.social_network.dto.image.ImageResDto;
+import com.example.social_network.dto.like.LikeResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -19,15 +24,19 @@ public class PostPostResDto {
 	@JsonProperty("image")
 	private ImageResDto image;
 
+	@JsonProperty("likes")
+	private List<LikeResDto> likes = new ArrayList<>();
+
+	@JsonProperty("comment")
+	private List<CommentResDto> comments = new ArrayList<>();
+
+	@JsonProperty("share_count")
+	private Long shareCount;
+
 	@JsonProperty("like_count")
 	private Long likeCount;
 
 	@JsonProperty("cmt_count")
 	private Long commentCount;
-
-	@JsonProperty("share_count")
-	private Long shareCount;
-
-	private Boolean liked;
 
 }

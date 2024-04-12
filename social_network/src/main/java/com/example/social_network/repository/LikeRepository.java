@@ -14,10 +14,10 @@ import com.example.social_network.entity.UserInfo;
 @Repository
 @Transactional
 public interface LikeRepository extends JpaRepository<Like, Long> {
-	Long countByPostAndStatus(Post post, Boolean status);
+	Long countByPost(Post post);
 
 	Like findOneByPostAndUserInfo(Post post, UserInfo userInfo);
 	
-	@Query(value = "select count(*) from likes l where l.user_id = ?1 and l.status = true and l.created_date between ?2 and ?3", nativeQuery = true)
+	@Query(value = "select count(*) from likes l where l.user_id = ?1 and l.created_date between ?2 and ?3", nativeQuery = true)
 	Long countLike(Long userInfoId, OffsetDateTime from, OffsetDateTime to);
 }

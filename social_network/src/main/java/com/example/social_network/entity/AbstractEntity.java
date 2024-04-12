@@ -26,4 +26,6 @@ public abstract class AbstractEntity {
 	@Column(updatable = true)
 	@CreationTimestamp
 	private Date updateDate;
+
+	protected Boolean deleted = Boolean.FALSE;
 }

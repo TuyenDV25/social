@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostPostReqDto {
 
-	Long id;
-
 	private String content;
 
 	private int privacy = PostType.PUBLIC.getCode();

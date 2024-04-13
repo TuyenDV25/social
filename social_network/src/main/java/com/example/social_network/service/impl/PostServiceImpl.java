@@ -18,11 +18,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.image.ImageResDto;
-import com.example.social_network.dto.post.DeletePostReqDto;
 import com.example.social_network.dto.post.DeletePostResDto;
 import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
+import com.example.social_network.dto.post.PostPrivacyPutReqDto;
 import com.example.social_network.dto.post.PostPutReqDto;
 import com.example.social_network.dto.utils.post.PostResponseUtils;
 import com.example.social_network.entity.Image;
@@ -73,9 +73,14 @@ public class PostServiceImpl implements PostService {
 
 		Post post = postMapper.dtoToEntity(reqDto);
 
+		post.setUserInfo(userInfoRepository
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get());
+
+		Post insertedPost = postRepository.save(post);
+		List<Image> imageList = new ArrayList<>();
 		if (files != null && files.length > 0) {
 			List<ImageResDto> imageResDto = fileService.uploadImage(files);
-			List<Image> imageList = new ArrayList<>();
+
 			if (!CollectionUtils.isEmpty(imageResDto)) {
 				imageResDto.stream().forEach(imageDto -> {
 					Image imageE = imageService.findOneById(imageDto.getId());
@@ -85,19 +90,14 @@ public class PostServiceImpl implements PostService {
 
 				});
 			}
-
-			post.getImages().addAll(imageList);
 		}
+		insertedPost.setImages(imageList);
 
-		post.setUserInfo(userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get());
-		postRepository.save(post);
-
-		return postResponseUtils.convert(post);
+		return postResponseUtils.convert(insertedPost);
 	}
 
 	@Override
-	public PostPostResDto update(PostPostReqDto reqDto, MultipartFile[] files) {
+	public PostPostResDto update(PostPutReqDto reqDto, MultipartFile[] files) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
@@ -106,15 +106,35 @@ public class PostServiceImpl implements PostService {
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
-		UserInfo userInfor = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-		if (postRepository.findByUserInfoAndId(userInfor, user.getId()) == null) {
-			throw new AppException(ErrorCode.UNAUTHORIZED);
+		if (postRepository.findByUserInfoAndId(user, post.getId()) == null) {
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 
+		post.setContent(reqDto.getContent());
+		post.setPrivacy(reqDto.getPrivacy());
+
+		
+		if (StringUtils.isBlank(post.getContent())
+				&& ((post.getImages() == null || post.getImages().size() < 1) && (files == null || files.length < 1))) {
+			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
+		}
+		
+		//delete image from post
+		List<Image> removeImageList = new ArrayList<>();
+		if (!CollectionUtils.isEmpty(reqDto.getListImageIdDeletes())) {
+			reqDto.getListImageIdDeletes().stream().forEach(id -> {
+				imageService.deleteById(id);
+				removeImageList.add(imageService.findOneById(id));
+			});
+		}
+
+		Post insertedPost = postRepository.save(post);
+		
+		List<Image> imageList = new ArrayList<>();
+
+		//upload image to cloudinary
 		if (files != null && files.length > 0) {
 			List<ImageResDto> imageResDto = fileService.uploadImage(files);
-			List<Image> imageList = new ArrayList<>();
 			if (!CollectionUtils.isEmpty(imageResDto)) {
 				imageResDto.stream().forEach(imageDto -> {
 					Image imageE = imageService.findOneById(imageDto.getId());
@@ -123,34 +143,25 @@ public class PostServiceImpl implements PostService {
 					imageList.add(imageE);
 				});
 			}
-
-			post.getImages().addAll(imageList);
 		}
-		post.setContent(reqDto.getContent());
-		post.setPrivacy(reqDto.getPrivacy());
-
-		if (StringUtils.isBlank(post.getContent()) && (post.getImages() == null || post.getImages().size() < 1)) {
-			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
-		}
-
-		postRepository.save(post);
-
-		return postResponseUtils.convert(post);
+		insertedPost.getImages().addAll(imageList);
+		insertedPost.getImages().removeAll(removeImageList);
+		return postResponseUtils.convert(insertedPost);
 	}
 
 	@Override
-	public DeletePostResDto delete(DeletePostReqDto reqDto) {
-		if (postRepository.findOneById(reqDto.getId()) == null)
+	public DeletePostResDto delete(Long id) {
+		if (postRepository.findOneById(id) == null)
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-		if (postRepository.findByUserInfoAndId(userInfor, reqDto.getId()) == null) {
+		if (postRepository.findByUserInfoAndId(userInfor, id) == null) {
 			throw new AppException(ErrorCode.UNAUTHORIZED);
 		}
-		postRepository.deleteById(reqDto.getId());
+		postRepository.deleteById(id);
 
-		return new DeletePostResDto(reqDto.getId());
+		return new DeletePostResDto(id);
 	}
 
 	@Override
@@ -170,7 +181,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Page<PostPostResDto> getUserAllPost(Long id, PostListReqDto reqDto) {
-		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
+		Pageable paging = PageRequest.of(reqDto.getPageNo(), 10);
 		UserInfo user = userInfoRepository.findOneById(id);
 		if (user == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
@@ -188,7 +199,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Page<PostPostResDto> getAllPostByKeyword(PostListReqDto reqDto) {
-		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
+		Pageable paging = PageRequest.of(reqDto.getPageNo(), 10);
 		Page<Post> pagedResult = postRepository.findByContentContains(reqDto.getContent(), paging);
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
@@ -201,7 +212,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostPostResDto updatePrivacy(PostPutReqDto reqDto) {
+	public PostPostResDto updatePrivacy(PostPrivacyPutReqDto reqDto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())

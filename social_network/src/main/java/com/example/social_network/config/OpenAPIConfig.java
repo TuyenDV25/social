@@ -22,7 +22,7 @@ public class OpenAPIConfig {
 						.name(securitySchemeName).type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
 	}
 
-	public void SwaggerConfig(MappingJackson2HttpMessageConverter converter) {
+	public OpenAPIConfig(MappingJackson2HttpMessageConverter converter) {
 		var supportedMediaTypes = new ArrayList<>(converter.getSupportedMediaTypes());
 		supportedMediaTypes.add(new MediaType("application", "octet-stream"));
 		converter.setSupportedMediaTypes(supportedMediaTypes);

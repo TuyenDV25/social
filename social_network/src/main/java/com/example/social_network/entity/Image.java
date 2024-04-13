@@ -1,5 +1,8 @@
 package com.example.social_network.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -7,6 +10,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "image")
+@SQLDelete(sql = "UPDATE image SET deleted = true WHERE id=?")
+@SQLRestriction(value = "deleted = false")
 public class Image extends AbstractEntity {
 
 	private String linkImage;
@@ -15,7 +20,7 @@ public class Image extends AbstractEntity {
 	@JoinColumn(name = "userInfo_id")
 	private UserInfo userInfo;
 
-	@ManyToOne
+	@ManyToOne()
 	@JoinColumn(name = "post_id")
 	private Post post;
 

@@ -1,4 +1,4 @@
-package com.example.social_network.dto.post;
+package com.example.social_network.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostListReqDto {
-	
-	private int pageNo;
-
-	private String content;
+public class UserInforSignupResDto {
+	private String username;
 }

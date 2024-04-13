@@ -8,10 +8,10 @@ import com.example.social_network.dto.auth.PasswordResetReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestResDto;
 import com.example.social_network.dto.auth.RegistUserRepDto;
-import com.example.social_network.dto.user.UserInforResDto;
+import com.example.social_network.dto.user.UserInforSignupResDto;
 
 public interface AuthService {
-	public UserInforResDto insertUser(RegistUserRepDto reqDto);
+	public UserInforSignupResDto insertUser(RegistUserRepDto reqDto);
 
 	public PasswordResetRequestResDto requestPasswordReset(PasswordResetRequestReqDto reqDto);
 

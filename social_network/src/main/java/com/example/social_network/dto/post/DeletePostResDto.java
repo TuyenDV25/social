@@ -1,13 +1,11 @@
 package com.example.social_network.dto.post;
 
-import com.example.social_network.dto.AbstractDto;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeletePostResDto extends AbstractDto {
+public class DeletePostResDto {
 	private Long id;
 
 	public Long getId() {

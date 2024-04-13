@@ -13,17 +13,21 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.social_network.dto.post.DeletePostReqDto;
 import com.example.social_network.dto.post.DeletePostResDto;
 import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostListResDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
+import com.example.social_network.dto.post.PostPrivacyPutReqDto;
 import com.example.social_network.dto.post.PostPutReqDto;
 import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -40,8 +44,11 @@ public class PostController {
 	 * @return {@link PostPostResDto}
 	 */
 	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-	BaseResponse<PostPostResDto> createPost(@RequestPart @Valid PostPostReqDto reqDto,
-			@RequestPart(required = false) MultipartFile[] multipartFile) {
+	@Operation(summary = "API create post", description = "create a post")
+	@ApiResponse(responseCode = "200", description = "Tạo post thành công", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPostReqDto.class)))
+	@ApiResponse(responseCode = "400", description = "Tạo post không thành công")
+	BaseResponse<PostPostResDto> createPost(@RequestPart(name = "reqDto", required = false) @Valid PostPostReqDto reqDto,
+			@RequestPart(name = "multipartFile", required = false) MultipartFile[] multipartFile) {
 		PostPostResDto resDto = postService.createPost(reqDto, multipartFile);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_CREATE_SUCCESS)
 				.build();
@@ -50,11 +57,14 @@ public class PostController {
 	/**
 	 * update post
 	 * 
-	 * @param reqDto {@link PostPostReqDto}
+	 * @param reqDto {@link PostPutReqDto}
 	 * @return {@link PostPostResDto}
 	 */
 	@PutMapping(value = "/update/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-	BaseResponse<PostPostResDto> updatePost(@RequestPart @Valid PostPostReqDto reqDto,
+	@Operation(summary = "API update post", description = "Update Post")
+	@ApiResponse(responseCode = "200", description = "Update post successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPutReqDto.class)))
+	@ApiResponse(responseCode = "400", description = "Update post error")
+	BaseResponse<PostPostResDto> updatePost(@RequestPart @Valid PostPutReqDto reqDto,
 			@RequestPart(required = false) MultipartFile[] multipartFile) {
 		PostPostResDto resDto = postService.update(reqDto, multipartFile);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_UPDATE_SUCCESS)
@@ -62,22 +72,27 @@ public class PostController {
 	}
 
 	@PutMapping(value = "/update-privacy")
-	BaseResponse<PostPostResDto> updatePrivacy(@Valid @RequestBody PostPutReqDto reqDto) {
+	@Operation(summary = "API update privacy", description = "Update privacy of post")
+	@ApiResponse(responseCode = "200", description = "Update privacy thành công", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPrivacyPutReqDto.class)))
+	@ApiResponse(responseCode = "400", description = "Update privacy không thành công")
+	BaseResponse<PostPostResDto> updatePrivacy(@Valid @RequestBody PostPrivacyPutReqDto reqDto) {
 		PostPostResDto resDto = postService.updatePrivacy(reqDto);
 		return BaseResponse.<PostPostResDto>builder().result(resDto)
 				.message(CommonConstants.POST_UPDATE_PRIVACY_SUCCESS).build();
 	}
 
 	/**
-	 * deletePost
+	 * delete post
 	 * 
-	 * @param idPost id pot will delete
-	 * @return {@link DeletePostResDto}
+	 * @param idPost
+	 * @return
 	 */
+	@Operation(summary = "API delete post", description = "Delete Post")
+	@ApiResponse(responseCode = "200", description = "Delete post successfully")
+	@ApiResponse(responseCode = "400", description = "Delete post error")
 	@PostMapping("/delete/{id}")
 	public BaseResponse<DeletePostResDto> deletePost(@PathVariable("id") Long idPost) {
-		DeletePostReqDto reqDto = new DeletePostReqDto(idPost);
-		DeletePostResDto resDto = postService.delete(reqDto);
+		DeletePostResDto resDto = postService.delete(idPost);
 		return BaseResponse.<DeletePostResDto>builder().result(resDto).message(CommonConstants.POST_DELETE_SUCCESS)
 				.build();
 	}

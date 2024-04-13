@@ -2,6 +2,8 @@ package com.example.social_network.dto.auth;
 
 import org.hibernate.validator.constraints.Length;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -14,9 +16,11 @@ import lombok.NoArgsConstructor;
 public class OtpReqDto {
 	
 	@Pattern(regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$", message = "UserName incorrect format")
-	@NotNull(message = "Tài khoản nhập null!")
+	@NotNull(message = "userName must be not null!")
+	@Schema(example = "username@gmail.net")
 	private String userName;
 
 	@Length(min = 6, max = 20, message = "must be from 6 to 20 characters!")
+	@NotBlank(message = "Password is required")
 	private String password;
 }

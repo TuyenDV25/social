@@ -37,7 +37,7 @@ public class Post extends AbstractEntity {
 	private List<Comment> comments = new ArrayList<>();
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-	private List<Image> images;
+	private List<Image> images = new ArrayList<>();
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
 	private List<Like> likes = new ArrayList<>();

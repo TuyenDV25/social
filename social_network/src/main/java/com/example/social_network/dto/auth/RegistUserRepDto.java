@@ -2,8 +2,8 @@ package com.example.social_network.dto.auth;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.example.social_network.enumdef.RoleType;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -15,24 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegistUserRepDto {
 
-	private int id;
-
 	@Pattern(regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$", message = "incorrect format")
-	@NotNull(message = "Tài khoản nhập null!")
+	@NotNull(message = "is required")
+	@Schema(example = "username@gmail.net")
 	private String username;
 
-	@Length(min = 3, max = 20, message = "must be from 3 to 20 characters!")
-	private String lastName;
-
-	@Length(min = 3, max = 20, message = "must be from 3 to 20 characters!")
-	private String firstName;
-
 	@Length(min = 6, max = 20, message = "must be from 6 to 20 characters!")
+	@NotBlank(message = "is required")
 	private String password;
-
-	@Pattern(regexp = "^[0-1]{1}[0-9]{0,2}$", message = "have to be number")
-	private String age;
-
-	private String roles = RoleType.USER.name();
-
 }

@@ -1,5 +1,10 @@
 package com.example.social_network.dto.post;
 
+import java.util.List;
+
+import com.example.social_network.enumdef.PostType;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostPutReqDto {
 	
-	private Long postId;
+	@NotNull(message = "is required")
+	private Long id;
+	
+	private String content;
+	
+	private List<Long> listImageIdDeletes;
 
-	private int privacy;
-
+	private int privacy = PostType.PUBLIC.getCode();
 }

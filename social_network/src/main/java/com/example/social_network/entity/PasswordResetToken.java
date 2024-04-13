@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,7 +32,7 @@ public class PasswordResetToken implements Serializable {
 
 	private String token;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(orphanRemoval = false)
 	@JoinColumn(name = "userInfo_id", referencedColumnName = "id")
 	@JsonManagedReference
 	private UserInfo userInfo;

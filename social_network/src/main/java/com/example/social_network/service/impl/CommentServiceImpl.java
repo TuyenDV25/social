@@ -1,6 +1,5 @@
 package com.example.social_network.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,10 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.social_network.dto.comment.CommentListReqDto;
 import com.example.social_network.dto.comment.CommentReqPostDto;
 import com.example.social_network.dto.comment.CommentReqPutDto;
 import com.example.social_network.dto.comment.CommentResDto;
@@ -34,6 +31,7 @@ import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.CommentService;
 import com.example.social_network.service.FileService;
 import com.example.social_network.service.ImageService;
+import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
 
 @Service
@@ -55,94 +53,143 @@ public class CommentServiceImpl implements CommentService {
 	ImageService imageService;
 
 	@Autowired
+	PostService postService;
+
+	@Autowired
 	CommentResponseUtils commentResponseUtils;
 
 	/**
 	 * create comment
 	 */
 	@Override
-	public CommentResDto createComment(CommentReqPostDto reqDto, MultipartFile[] files) {
-		Post post = postRepository.findOneById(reqDto.getId());
-		if (post == null) {
-			throw new AppException(ErrorCode.POST_NOTEXISTED);
+	public CommentResDto createComment(CommentReqPostDto reqDto, MultipartFile files) {
+
+		if (StringUtils.isBlank(reqDto.getContent()) && files == null) {
+			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
 		}
+
+		Post post = postRepository.findOneById(reqDto.getId());
+
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+
+		if (post == null || !postService.checkRightAccessPost(post, userInfor)) {
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
+		}
 
 		Comment comment = new Comment();
 		comment.setContent(reqDto.getContent());
 		comment.setUser(userInfor);
 		comment.setPost(post);
-		if (files != null && files.length > 0) {
-			List<ImageResDto> imageResDto = fileService.uploadImage(files);
-			List<Image> imageList = new ArrayList<>();
-			if (!CollectionUtils.isEmpty(imageResDto)) {
-				imageResDto.stream().forEach(imageDto -> {
-					Image imageE = imageService.findOneById(imageDto.getId());
-					imageE.setComment(comment);
-					imageService.save(imageE);
-					imageList.add(imageE);
 
-				});
+		Comment fixedComment = commentRepository.save(comment);
+		if (files != null) {
+			MultipartFile[] file = { files };
+			List<ImageResDto> imageResDto = fileService.uploadImage(file);
+			if (imageResDto.size() > 0) {
+				Image imageE = imageService.findOneById(imageResDto.get(0).getId());
+				imageE.setComment(comment);
+				imageService.save(imageE);
+				fixedComment.setImage(imageE);
 			}
-
-			comment.getImages().addAll(imageList);
 		}
-		return commentResponseUtils.convert(commentRepository.save(comment));
+		return commentResponseUtils.convert(fixedComment);
 	}
 
 	@Override
-	public CommentResDto updateComment(CommentReqPutDto reqDto, MultipartFile[] files) {
+	public CommentResDto updateComment(CommentReqPutDto reqDto, MultipartFile files) {
 
 		Comment comment = commentRepository.findOneById(reqDto.getId());
+
+		if (!checkDataUpdateOK(comment, reqDto, files)) {
+			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
+		}
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
-		if (comment == null || commentRepository.findByUserAndId(userInfor, reqDto.getId()) == null) {
+
+		if (comment == null || commentRepository.findByUserAndId(userInfor, reqDto.getId()) == null
+				|| !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}
-		if (files != null && files.length > 0) {
-			List<ImageResDto> imageResDto = fileService.uploadImage(files);
-			List<Image> imageList = new ArrayList<>();
-			if (!CollectionUtils.isEmpty(imageResDto)) {
-				imageResDto.stream().forEach(imageDto -> {
-					Image imageE = imageService.findOneById(imageDto.getId());
-					imageE.setComment(comment);
-					imageService.save(imageE);
-					imageList.add(imageE);
-				});
-			}
-			comment.getImages().addAll(imageList);
-		}
+
 		comment.setContent(reqDto.getContent());
+		Comment updateComment = commentRepository.save(comment);
 
-		if (StringUtils.isBlank(comment.getContent()) &&(comment.getImages() == null || comment.getImages().size() < 1)) {
-			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
+		// delete
+		if (reqDto.getDeleteImageId() != null) {
+			imageService.deleteById(reqDto.getDeleteImageId());
+			updateComment.setImage(null);
 		}
 
-		return commentResponseUtils.convert(commentRepository.save(comment));
+		if (files != null) {
+			MultipartFile[] file = { files };
+			List<ImageResDto> imageResDto = fileService.uploadImage(file);
+			if (imageResDto.size() > 0) {
+
+				Image imageE = imageService.findOneById(imageResDto.get(0).getId());
+				imageE.setComment(comment);
+				imageService.save(imageE);
+				updateComment.setImage(imageE);
+			}
+		}
+		return commentResponseUtils.convert(updateComment);
 	}
 
 	@Override
 	public void delete(Long id) {
 		Comment comment = commentRepository.findOneById(id);
-		if (comment == null) {
+
+		UserInfo userInfor = userInfoRepository
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+
+		if (comment == null || commentRepository.findByUserAndId(userInfor, id) == null
+				|| !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}
 		commentRepository.delete(comment);
 	}
 
 	@Override
-	public Page<CommentResDto> getAllComment(Long id, CommentListReqDto reqDto) {
-		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
+	public Page<CommentResDto> getAllComment(Long id, Integer pageNo) {
+		Pageable paging = PageRequest.of(pageNo, 10);
 		Post post = postRepository.findOneById(id);
-		if (post == null) {
+
+		UserInfo userInfor = userInfoRepository
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+
+		if (post == null || !postService.checkRightAccessPost(post, userInfor)) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 		Page<Comment> pagedResult = commentRepository.findByPost(post, paging);
 		List<CommentResDto> commentResponseList = pagedResult.stream().map(commentResponseUtils::convert)
 				.collect(Collectors.toList());
 		return new PageImpl<>(commentResponseList, paging, commentResponseList.size());
+	}
+
+	/**
+	 * check if data input update comment is ok
+	 * 
+	 * @param comment {@link Comment}
+	 * @param reqDto  data input
+	 * @param files   file upload
+	 * @return true if data input ok, false otherwise
+	 */
+	private boolean checkDataUpdateOK(Comment comment, CommentReqPutDto reqDto, MultipartFile files) {
+		// case only have content, if update no content and no upload image will be
+		// error
+		if ((comment.getImage() == null)) {
+			if (files == null && StringUtils.isBlank(reqDto.getContent())) {
+				return false;
+			}
+		} else {
+			if (files == null && reqDto.getDeleteImageId() != null && StringUtils.isBlank(reqDto.getContent())) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

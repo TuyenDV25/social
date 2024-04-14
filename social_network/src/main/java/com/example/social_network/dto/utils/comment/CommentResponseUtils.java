@@ -10,6 +10,7 @@ import com.example.social_network.dto.comment.CommentResDto;
 import com.example.social_network.dto.utils.ResponseUtilsAdapter;
 import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
 import com.example.social_network.entity.Comment;
+import com.example.social_network.mapper.comment.CommentResponseMapper;
 import com.example.social_network.mapper.image.ImageResponseMapper;
 
 import lombok.AllArgsConstructor;
@@ -20,15 +21,18 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 
 	@Autowired
 	private ImageResponseMapper imageMapper;
+	
+	@Autowired
+	private CommentResponseMapper commentMapper;
 
 	@Autowired
 	private UserInfoResponseUtils userInfoResponseUtils;
 
 	@Override
 	public CommentResDto convert(Comment entity) {
-		CommentResDto resDto = new CommentResDto();
+		CommentResDto resDto = commentMapper.entityToDto(entity);
 		resDto.setContent(entity.getContent());
-		resDto.setImage(imageMapper.dtoListToEntityList(entity.getImages()));
+		resDto.setImage(imageMapper.entityToDto(entity.getImage()));
 		resDto.setUserInfo(userInfoResponseUtils.convert(entity.getUser()));
 		return resDto;
 	}
@@ -38,7 +42,7 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 		List<CommentResDto> listResDto = new ArrayList<>();
 		listEntity.stream().forEach(entity -> {
 			listResDto.add(CommentResDto.builder().content(entity.getContent())
-					.image(imageMapper.dtoListToEntityList(entity.getImages()))
+					.image(imageMapper.entityToDto(entity.getImage()))
 					.userInfo(userInfoResponseUtils.convert(entity.getUser())).build());
 		});
 		return listResDto;

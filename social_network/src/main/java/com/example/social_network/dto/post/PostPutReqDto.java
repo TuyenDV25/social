@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostPutReqDto {
-	
+
 	@NotNull(message = "is required")
 	private Long id;
-	
+
 	private String content;
-	
+
 	private List<Long> listImageIdDeletes;
 
 	private int privacy = PostType.PUBLIC.getCode();

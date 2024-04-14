@@ -1,14 +1,14 @@
 package com.example.social_network.dto.comment;
 
-import com.example.social_network.dto.AbstractDto;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentReqPostDto extends AbstractDto {
+public class CommentReqPostDto{
 
+	@NotNull(message = "is required")
 	Long id;
 
 	private String content;

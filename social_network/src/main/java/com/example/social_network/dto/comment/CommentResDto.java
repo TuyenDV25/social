@@ -1,7 +1,5 @@
 package com.example.social_network.dto.comment;
 
-import java.util.List;
-
 import com.example.social_network.dto.AbstractDto;
 import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.user.UserInforResDto;
@@ -18,7 +16,7 @@ public class CommentResDto extends AbstractDto {
 	private String content;
 
 	@JsonProperty("image")
-	private List<ImageResDto> image;
+	private ImageResDto image;
 
 	@JsonProperty("userInfo")
 	private UserInforResDto userInfo;
@@ -31,19 +29,19 @@ public class CommentResDto extends AbstractDto {
 		this.content = content;
 	}
 
-	public List<ImageResDto> getImage() {
-		return image;
-	}
-
-	public void setImage(List<ImageResDto> image) {
-		this.image = image;
-	}
-
 	public UserInforResDto getUserInfo() {
 		return userInfo;
 	}
 
 	public void setUserInfo(UserInforResDto userInfo) {
 		this.userInfo = userInfo;
+	}
+
+	public ImageResDto getImage() {
+		return image;
+	}
+
+	public void setImage(ImageResDto image) {
+		this.image = image;
 	}
 }

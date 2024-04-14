@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.post.DeletePostResDto;
-import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.dto.post.PostPrivacyPutReqDto;
@@ -64,9 +63,13 @@ public class PostServiceImpl implements PostService {
 	@Autowired
 	PostResponseUtils postResponseUtils;
 
+	/**
+	 * create post
+	 */
 	@Override
 	public PostPostResDto createPost(PostPostReqDto reqDto, MultipartFile[] files) {
 
+		//validate input
 		if (StringUtils.isBlank(reqDto.getContent()) && (files == null || files.length < 1)) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
 		}
@@ -77,10 +80,10 @@ public class PostServiceImpl implements PostService {
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get());
 
 		Post insertedPost = postRepository.save(post);
-		List<Image> imageList = new ArrayList<>();
+		//add image to cloudnary
 		if (files != null && files.length > 0) {
+			List<Image> imageList = new ArrayList<>();
 			List<ImageResDto> imageResDto = fileService.uploadImage(files);
-
 			if (!CollectionUtils.isEmpty(imageResDto)) {
 				imageResDto.stream().forEach(imageDto -> {
 					Image imageE = imageService.findOneById(imageDto.getId());
@@ -90,50 +93,52 @@ public class PostServiceImpl implements PostService {
 
 				});
 			}
+			insertedPost.setImages(imageList);
 		}
-		insertedPost.setImages(imageList);
 
 		return postResponseUtils.convert(insertedPost);
 	}
 
+	/**
+	 * update post
+	 */
 	@Override
 	public PostPostResDto update(PostPutReqDto reqDto, MultipartFile[] files) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
-		Post post = postRepository.findById(reqDto.getId()).get();
+		Post post = postRepository.findOneById(reqDto.getId());
+		
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
+		//check if user have right to update the post
 		if (postRepository.findByUserInfoAndId(user, post.getId()) == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
+		}
+
+		//check data input Post match condition: at least have content or image
+		if (!checkDataUpdateOK(post, reqDto, files)) {
+			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
 		}
 
 		post.setContent(reqDto.getContent());
 		post.setPrivacy(reqDto.getPrivacy());
 
-		
-		if (StringUtils.isBlank(post.getContent())
-				&& ((post.getImages() == null || post.getImages().size() < 1) && (files == null || files.length < 1))) {
-			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
-		}
-		
-		//delete image from post
-		List<Image> removeImageList = new ArrayList<>();
+		// delete image from post
 		if (!CollectionUtils.isEmpty(reqDto.getListImageIdDeletes())) {
 			reqDto.getListImageIdDeletes().stream().forEach(id -> {
+				post.getImages().remove(imageService.findOneById(id));
 				imageService.deleteById(id);
-				removeImageList.add(imageService.findOneById(id));
 			});
 		}
 
 		Post insertedPost = postRepository.save(post);
-		
-		List<Image> imageList = new ArrayList<>();
 
-		//upload image to cloudinary
+		// upload image to cloudinary
 		if (files != null && files.length > 0) {
+			List<Image> imageList = new ArrayList<>();
 			List<ImageResDto> imageResDto = fileService.uploadImage(files);
 			if (!CollectionUtils.isEmpty(imageResDto)) {
 				imageResDto.stream().forEach(imageDto -> {
@@ -143,12 +148,14 @@ public class PostServiceImpl implements PostService {
 					imageList.add(imageE);
 				});
 			}
+			insertedPost.getImages().addAll(imageList);
 		}
-		insertedPost.getImages().addAll(imageList);
-		insertedPost.getImages().removeAll(removeImageList);
 		return postResponseUtils.convert(insertedPost);
 	}
 
+	/**
+	 * delete post
+	 */
 	@Override
 	public DeletePostResDto delete(Long id) {
 		if (postRepository.findOneById(id) == null)
@@ -157,13 +164,16 @@ public class PostServiceImpl implements PostService {
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 		if (postRepository.findByUserInfoAndId(userInfor, id) == null) {
-			throw new AppException(ErrorCode.UNAUTHORIZED);
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 		postRepository.deleteById(id);
 
 		return new DeletePostResDto(id);
 	}
 
+	/**
+	 * get detail of post by id
+	 */
 	@Override
 	public PostPostResDto getPostDetail(Long Id) {
 		Post post = postRepository.findOneById(Id);
@@ -172,16 +182,19 @@ public class PostServiceImpl implements PostService {
 		}
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-		if (post.getPrivacy() == PostType.ONLY_ME.getCode() && userInfor.getId() != post.getId()) {
+		if (!checkRightAccessPost(post, userInfor)) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 		PostPostResDto resDto = postResponseUtils.convert(post);
 		return resDto;
 	}
 
+	/**
+	 * get all post of user by id
+	 */
 	@Override
-	public Page<PostPostResDto> getUserAllPost(Long id, PostListReqDto reqDto) {
-		Pageable paging = PageRequest.of(reqDto.getPageNo(), 10);
+	public Page<PostPostResDto> getUserAllPost(Long id, Integer pageNo) {
+		Pageable paging = PageRequest.of(pageNo, 10);
 		UserInfo user = userInfoRepository.findOneById(id);
 		if (user == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
@@ -190,27 +203,29 @@ public class PostServiceImpl implements PostService {
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 		List<PostPostResDto> postResponseList = pagedResult.stream()
-				.filter(post -> post.getUserInfo().getId() == userInfor.getId()
-						|| (post.getUserInfo().getId() != userInfor.getId()
-								&& post.getPrivacy() != PostType.ONLY_ME.getCode()))
-				.map(postResponseUtils::convert).collect(Collectors.toList());
+				.filter(post -> checkRightAccessPost(post, userInfor)).map(postResponseUtils::convert)
+				.collect(Collectors.toList());
 		return new PageImpl<>(postResponseList, paging, postResponseList.size());
 	}
 
+	/**
+	 * get post contain a input content
+	 */
 	@Override
-	public Page<PostPostResDto> getAllPostByKeyword(PostListReqDto reqDto) {
-		Pageable paging = PageRequest.of(reqDto.getPageNo(), 10);
-		Page<Post> pagedResult = postRepository.findByContentContains(reqDto.getContent(), paging);
+	public Page<PostPostResDto> getAllPostByKeyword(Integer pageNo, String searchContent) {
+		Pageable paging = PageRequest.of(pageNo, 10);
+		Page<Post> pagedResult = postRepository.findByContentContains(searchContent, paging);
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 		List<PostPostResDto> postResponseList = pagedResult.stream()
-				.filter(post -> post.getUserInfo().getId() == userInfor.getId()
-						|| (post.getUserInfo().getId() != userInfor.getId()
-								&& post.getPrivacy() != PostType.ONLY_ME.getCode()))
-				.map(postResponseUtils::convert).collect(Collectors.toList());
+				.filter(post -> checkRightAccessPost(post, userInfor)).map(postResponseUtils::convert)
+				.collect(Collectors.toList());
 		return new PageImpl<>(postResponseList, paging, postResponseList.size());
 	}
 
+	/**
+	 * update privacy of the post
+	 */
 	@Override
 	public PostPostResDto updatePrivacy(PostPrivacyPutReqDto reqDto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -227,4 +242,35 @@ public class PostServiceImpl implements PostService {
 		return postResponseUtils.convert(post);
 	}
 
+	/**
+	 * check if user have right with post
+	 */
+	@Override
+	public boolean checkRightAccessPost(Post post, UserInfo user) {
+		return !(post.getUserInfo().getId() != user.getId() && post.getPrivacy() == PostType.ONLY_ME.getCode());
+	}
+
+	/**
+	 * check if data update post is ok
+	 * 
+	 * @param post   {@link Post}
+	 * @param reqDto {@link PostPutReqDto}
+	 * @param files
+	 * @return true if ok
+	 */
+	private boolean checkDataUpdateOK(Post post, PostPutReqDto reqDto, MultipartFile[] files) {
+		// if have only content, input empty content and have not image will be error
+		if (CollectionUtils.isEmpty(post.getImages())) {
+			if (StringUtils.isBlank(reqDto.getContent()) && files == null) {
+				return false;
+			}
+		} else {
+			// if delete all image of post and content empty will be erroe
+			if (StringUtils.isBlank(reqDto.getContent()) && files == null && (reqDto.getListImageIdDeletes() != null
+					&& post.getImages().size() == reqDto.getListImageIdDeletes().size())) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

@@ -3,12 +3,14 @@ package com.example.social_network.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,9 +47,10 @@ public class PostController {
 	 */
 	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API create post", description = "create a post")
-	@ApiResponse(responseCode = "200", description = "Tạo post thành công", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPostReqDto.class)))
-	@ApiResponse(responseCode = "400", description = "Tạo post không thành công")
-	BaseResponse<PostPostResDto> createPost(@RequestPart(name = "reqDto", required = false) @Valid PostPostReqDto reqDto,
+	@ApiResponse(responseCode = "200", description = "create post successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPostReqDto.class)))
+	@ApiResponse(responseCode = "400", description = "create post error")
+	BaseResponse<PostPostResDto> createPost(
+			@RequestPart(name = "reqDto", required = false) @Valid PostPostReqDto reqDto,
 			@RequestPart(name = "multipartFile", required = false) MultipartFile[] multipartFile) {
 		PostPostResDto resDto = postService.createPost(reqDto, multipartFile);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_CREATE_SUCCESS)
@@ -60,7 +63,7 @@ public class PostController {
 	 * @param reqDto {@link PostPutReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PutMapping(value = "/update/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	@PutMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API update post", description = "Update Post")
 	@ApiResponse(responseCode = "200", description = "Update post successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPutReqDto.class)))
 	@ApiResponse(responseCode = "400", description = "Update post error")
@@ -85,12 +88,12 @@ public class PostController {
 	 * delete post
 	 * 
 	 * @param idPost
-	 * @return
+	 * @return {@link DeletePostResDto}
 	 */
 	@Operation(summary = "API delete post", description = "Delete Post")
 	@ApiResponse(responseCode = "200", description = "Delete post successfully")
 	@ApiResponse(responseCode = "400", description = "Delete post error")
-	@PostMapping("/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	public BaseResponse<DeletePostResDto> deletePost(@PathVariable("id") Long idPost) {
 		DeletePostResDto resDto = postService.delete(idPost);
 		return BaseResponse.<DeletePostResDto>builder().result(resDto).message(CommonConstants.POST_DELETE_SUCCESS)
@@ -104,6 +107,9 @@ public class PostController {
 	 * @return {@link PostPostResDto}
 	 */
 	@GetMapping("detail/{id}")
+	@Operation(summary = "API get detail post")
+	@ApiResponse(responseCode = "200", description = "get detail post successfully")
+	@ApiResponse(responseCode = "400", description = "get detail post error")
 	public BaseResponse<PostPostResDto> getPost(@PathVariable("id") Long idPost) {
 		PostPostResDto resDto = postService.getPostDetail(idPost);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_DETAIL_SUCCESS)
@@ -117,10 +123,12 @@ public class PostController {
 	 * @param reqDto {@link PostListReqDto}
 	 * @return List of {@link PostListResDto}
 	 */
-	@PostMapping("all/{id}")
+	@GetMapping("all/{id}")
+	@Operation(summary = "API get list post")
+	@ApiResponse(responseCode = "200", description = "Get list post successfully")
 	public BaseResponse<PostListResDto> getUserAllPost(@PathVariable("id") Long id,
-			@Valid @RequestBody PostListReqDto reqDto) {
-		Page<PostPostResDto> result = postService.getUserAllPost(id, reqDto);
+			@RequestParam Integer pageNumber) {
+		Page<PostPostResDto> result = postService.getUserAllPost(id, pageNumber);
 		return BaseResponse.<PostListResDto>builder().result(PostListResDto.builder().listPost(result).build())
 				.message(CommonConstants.USER_SEARCH_SUCCES).build();
 	}
@@ -131,9 +139,11 @@ public class PostController {
 	 * @param reqDto {@link PostListReqDto}
 	 * @return {@link PostListResDto}
 	 */
-	@PostMapping("search")
-	public BaseResponse<PostListResDto> getAllPostByKeyword(@Valid @RequestBody PostListReqDto reqDto) {
-		Page<PostPostResDto> result = postService.getAllPostByKeyword(reqDto);
+	@GetMapping("search")
+	@Operation(summary = "API get list post by name")
+	@ApiResponse(responseCode = "200", description = "Get list post by Name successfully")
+	public BaseResponse<PostListResDto> getAllPostByKeyword(@RequestParam Integer pageNumber, @RequestParam String searchContent) {
+		Page<PostPostResDto> result = postService.getAllPostByKeyword(pageNumber, searchContent);
 		return BaseResponse.<PostListResDto>builder().result(PostListResDto.builder().listPost(result).build())
 				.message(CommonConstants.USER_SEARCH_SUCCES).build();
 	}

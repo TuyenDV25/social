@@ -42,7 +42,7 @@ public class CommentController {
 	 * @param idPost
 	 * @return {@link CommentResDto}
 	 */
-	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API comment")
 	@ApiResponse(responseCode = "200", description = "create comment successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResDto.class)))
 	@ApiResponse(responseCode = "400", description = "create comment error")
@@ -53,7 +53,7 @@ public class CommentController {
 				.build();
 	}
 
-	@PutMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	@PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API update comment", description = "Update a comment")
 	@ApiResponse(responseCode = "200", description = "Update comment successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResDto.class)))
 	@ApiResponse(responseCode = "400", description = "Update comment error")
@@ -64,7 +64,7 @@ public class CommentController {
 				.build();
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	@Operation(summary = "API delete comment", description = "Delete a comment")
 	@ApiResponse(responseCode = "200", description = "Delete comment successfully")
 	@ApiResponse(responseCode = "400", description = "Delete comment error")

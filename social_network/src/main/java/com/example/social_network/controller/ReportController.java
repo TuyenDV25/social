@@ -24,7 +24,7 @@ public class ReportController {
 	@Autowired
 	ReportService reportService;
 
-	@GetMapping("/download")
+	@GetMapping()
 	@Operation(summary = "API dowload report")
 	@ApiResponse(responseCode = "200", description = "dowload report successfully")
 	@ApiResponse(responseCode = "400", description = "dowload report error")

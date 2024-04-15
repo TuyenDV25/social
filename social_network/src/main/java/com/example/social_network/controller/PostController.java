@@ -44,7 +44,7 @@ public class PostController {
 	 * @param reqDto {@link PostPostReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API create post", description = "create a post")
 	@ApiResponse(responseCode = "200", description = "create post successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPostReqDto.class)))
 	@ApiResponse(responseCode = "400", description = "create post error")
@@ -62,7 +62,7 @@ public class PostController {
 	 * @param reqDto {@link PostPutReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PutMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	@PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API update post", description = "Update Post")
 	@ApiResponse(responseCode = "200", description = "Update post successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPutReqDto.class)))
 	@ApiResponse(responseCode = "400", description = "Update post error")
@@ -92,7 +92,7 @@ public class PostController {
 	@Operation(summary = "API delete post", description = "Delete Post")
 	@ApiResponse(responseCode = "200", description = "Delete post successfully")
 	@ApiResponse(responseCode = "400", description = "Delete post error")
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public BaseResponse<DeletePostResDto> deletePost(@PathVariable("id") Long idPost) {
 		DeletePostResDto resDto = postService.delete(idPost);
 		return BaseResponse.<DeletePostResDto>builder().result(resDto).message(CommonConstants.POST_DELETE_SUCCESS)
@@ -105,7 +105,7 @@ public class PostController {
 	 * @param idPost
 	 * @return {@link PostPostResDto}
 	 */
-	@GetMapping("detail/{id}")
+	@GetMapping("/{id}")
 	@Operation(summary = "API get detail post")
 	@ApiResponse(responseCode = "200", description = "get detail post successfully")
 	@ApiResponse(responseCode = "400", description = "get detail post error")

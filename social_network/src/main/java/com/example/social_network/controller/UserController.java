@@ -6,8 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +20,8 @@ import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.UserService;
 import com.example.social_network.utils.CommonConstants;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
 /**
@@ -33,6 +35,8 @@ public class UserController {
 	private UserService userService;
 
 	@PostMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	@Operation(summary = "API update info of user")
+	@ApiResponse(responseCode = "200", description = "update info of user successfully")
 	public BaseResponse<UserInforResDto> updateInfo(@RequestPart @Valid UserInfoPutReqDto reqDto,
 			@RequestPart(required = false) MultipartFile[] multipartFile) {
 
@@ -47,6 +51,8 @@ public class UserController {
 	 * @return {@link UserInforResDto}
 	 */
 	@GetMapping("/me")
+	@Operation(summary = "API get profile of user")
+	@ApiResponse(responseCode = "200", description = "get profile successfully")
 	public BaseResponse<UserInforResDto> getInformation() {
 		UserInforResDto resDto = userService.getUserInformation();
 		return BaseResponse.<UserInforResDto>builder().result(resDto).message(CommonConstants.USER_DETAIL_SUCCESS)
@@ -54,6 +60,8 @@ public class UserController {
 	}
 
 	@GetMapping("/{userId}")
+	@Operation(summary = "API get profile user by Id")
+	@ApiResponse(responseCode = "200", description = "get profile successfully")
 	public BaseResponse<UserInforResDto> getInformationById(@PathVariable("userId") Long id) {
 		UserInforResDto resDto = userService.findDetailUser(id);
 		return BaseResponse.<UserInforResDto>builder().result(resDto).message(CommonConstants.USER_DETAIL_SUCCESS)
@@ -67,9 +75,11 @@ public class UserController {
 	 * @return {@link UserInfoListPostResDto} list of user by name and size and
 	 *         index
 	 */
-	@PostMapping("/search")
-	public BaseResponse<UserInfoListPostResDto> searchUser(@Valid @RequestBody UserInfoListPostReqDto reqDto) {
-		Page<UserInforResDto> userInforList = userService.searchUserByName(reqDto);
+	@GetMapping("/search")
+	@Operation(summary = "API search user by name")
+	@ApiResponse(responseCode = "200", description = "search successfully")
+	public BaseResponse<UserInfoListPostResDto> searchUser(@RequestParam Integer pageNumber, @RequestParam String searchContent) {
+		Page<UserInforResDto> userInforList = userService.searchUserByName(pageNumber, searchContent);
 		return BaseResponse.<UserInfoListPostResDto>builder()
 				.result(UserInfoListPostResDto.builder().listUser(userInforList).build())
 				.message(CommonConstants.USER_SEARCH_SUCCES).build();

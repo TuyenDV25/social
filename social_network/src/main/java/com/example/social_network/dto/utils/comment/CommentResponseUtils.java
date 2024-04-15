@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.social_network.dto.comment.CommentResDto;
 import com.example.social_network.dto.utils.ResponseUtilsAdapter;
+import com.example.social_network.dto.utils.like.LikeResponseUtils;
 import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
 import com.example.social_network.entity.Comment;
 import com.example.social_network.mapper.comment.CommentResponseMapper;
@@ -27,12 +28,16 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 
 	@Autowired
 	private UserInfoResponseUtils userInfoResponseUtils;
+	
+	@Autowired
+	private LikeResponseUtils likeResponseUtils;
 
 	@Override
 	public CommentResDto convert(Comment entity) {
 		CommentResDto resDto = commentMapper.entityToDto(entity);
 		resDto.setContent(entity.getContent());
 		resDto.setImage(imageMapper.entityToDto(entity.getImage()));
+		resDto.setLikes(likeResponseUtils.convert(entity.getLikes()));
 		resDto.setUserInfo(userInfoResponseUtils.convert(entity.getUser()));
 		return resDto;
 	}
@@ -43,6 +48,7 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 		listEntity.stream().forEach(entity -> {
 			listResDto.add(CommentResDto.builder().content(entity.getContent())
 					.image(imageMapper.entityToDto(entity.getImage()))
+					.likes(likeResponseUtils.convert(entity.getLikes()))
 					.userInfo(userInfoResponseUtils.convert(entity.getUser())).build());
 		});
 		return listResDto;

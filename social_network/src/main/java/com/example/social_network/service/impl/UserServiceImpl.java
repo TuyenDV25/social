@@ -1,9 +1,9 @@
 package com.example.social_network.service.impl;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.image.ImageResDto;
-import com.example.social_network.dto.user.UserInfoListPostReqDto;
 import com.example.social_network.dto.user.UserInfoPutReqDto;
 import com.example.social_network.dto.user.UserInforResDto;
 import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
@@ -27,6 +26,7 @@ import com.example.social_network.service.FileService;
 import com.example.social_network.service.ImageService;
 import com.example.social_network.service.UserService;
 import com.example.social_network.utils.CommonConstants;
+import com.example.social_network.utils.Utils;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 			user.setFirstName(firstName);
 
 		if (dob != null)
-			user.setDob(LocalDate.parse(dob));
+			user.setDob(Utils.convertStringToLocalDate(dob));
 
 		if (bio != null)
 			user.setIntroyourself(bio);
@@ -96,10 +96,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<UserInforResDto> searchUserByName(UserInfoListPostReqDto reqDto) {
-		Pageable paging = PageRequest.of(reqDto.getPageNo(), reqDto.getPageSize());
-		Page<UserInfo> pagedResult = userInfoRepository.findAllByFirstNameContainsOrLastNameContains(reqDto.getName(),
-				reqDto.getName(), paging);
+	public Page<UserInforResDto> searchUserByName(Integer pageNo, String content) {
+		Pageable paging = PageRequest.of(pageNo, 10);
+		Page<UserInfo> pagedResult;
+		if (StringUtils.isBlank(content)) {
+			pagedResult = userInfoRepository.findAll(paging);
+		} else {
+			pagedResult = userInfoRepository.findAllByFirstNameContainsOrLastNameContains(content, content, paging);
+		}
 		List<UserInforResDto> userInfoResponseList = pagedResult.stream().map(userInfoResponseUtils::convert)
 				.collect(Collectors.toList());
 		return new PageImpl<>(userInfoResponseList, paging, userInfoResponseList.size());

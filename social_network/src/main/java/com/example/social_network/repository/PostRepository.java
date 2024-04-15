@@ -1,6 +1,6 @@
 package com.example.social_network.repository;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +34,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	
 	@Query(value = "select count(*) from post p where p.user_info_id = ?1 and p.created_date between ?2 and ?3",
 			nativeQuery = true)
-	Long countPosts(Long userInfoId, OffsetDateTime from, OffsetDateTime to);
+	long countPosts(Long userInfoId, Date from, Date to);
 
 }

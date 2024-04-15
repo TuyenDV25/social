@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.social_network.service.ReportService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @CrossOrigin("http://localhost:8080")
 @RestController
 @RequestMapping("api/v1/report")
@@ -22,6 +25,9 @@ public class ReportController {
 	ReportService reportService;
 
 	@GetMapping("/download")
+	@Operation(summary = "API dowload report")
+	@ApiResponse(responseCode = "200", description = "dowload report successfully")
+	@ApiResponse(responseCode = "400", description = "dowload report error")
 	public ResponseEntity<Resource> getFile() {
 		String filename = "weeklyReport.xlsx";
 		InputStreamResource file = new InputStreamResource(reportService.load());

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.post.DeletePostResDto;
-import com.example.social_network.dto.post.PostListReqDto;
 import com.example.social_network.dto.post.PostListResDto;
 import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
@@ -117,11 +116,10 @@ public class PostController {
 	}
 
 	/**
-	 * get all post of user
 	 * 
 	 * @param id
-	 * @param reqDto {@link PostListReqDto}
-	 * @return List of {@link PostListResDto}
+	 * @param pageNumber
+	 * @return list post of user
 	 */
 	@GetMapping("all/{id}")
 	@Operation(summary = "API get list post")
@@ -134,10 +132,11 @@ public class PostController {
 	}
 
 	/**
-	 * list post contain content is searched
+	 * get list post contain content
 	 * 
-	 * @param reqDto {@link PostListReqDto}
-	 * @return {@link PostListResDto}
+	 * @param pageNumber
+	 * @param searchContent
+	 * @return list Post
 	 */
 	@GetMapping("search")
 	@Operation(summary = "API get list post by name")

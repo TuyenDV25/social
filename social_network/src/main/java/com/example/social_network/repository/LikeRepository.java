@@ -1,6 +1,6 @@
 package com.example.social_network.repository;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,5 +22,5 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 	Like findOneByCommentAndUserInfo(Comment comment, UserInfo userInfo);
 
 	@Query(value = "select count(*) from likes l where l.user_id = ?1 and l.created_date between ?2 and ?3", nativeQuery = true)
-	Long countLike(Long userInfoId, OffsetDateTime from, OffsetDateTime to);
+	Long countLike(Long userInfoId, Date from, Date to);
 }

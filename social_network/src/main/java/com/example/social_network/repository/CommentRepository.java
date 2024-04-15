@@ -1,6 +1,6 @@
 package com.example.social_network.repository;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,5 +25,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 	Page<Comment> findByPost(Post post, Pageable pageable);
 
 	@Query(value = "select count(*) from comment c where c.user_id = ?1 and c.created_date between ?2 and ?3", nativeQuery = true)
-	Long countComment(Long userInfoId, OffsetDateTime from, OffsetDateTime to);
+	Long countComment(Long userInfoId, Date from, Date to);
 }

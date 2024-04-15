@@ -8,14 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.social_network.dto.comment.CommentListReqDto;
 import com.example.social_network.dto.comment.CommentListResDto;
 import com.example.social_network.dto.comment.CommentReqPostDto;
 import com.example.social_network.dto.comment.CommentReqPutDto;
@@ -48,7 +46,8 @@ public class CommentController {
 	@Operation(summary = "API comment")
 	@ApiResponse(responseCode = "200", description = "create comment successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResDto.class)))
 	@ApiResponse(responseCode = "400", description = "create comment error")
-	public BaseResponse<CommentResDto> createComment(@RequestPart @Valid CommentReqPostDto reqDto, @RequestPart(required = false) MultipartFile multipartFile) {
+	public BaseResponse<CommentResDto> createComment(@RequestPart @Valid CommentReqPostDto reqDto,
+			@RequestPart(required = false) MultipartFile multipartFile) {
 		CommentResDto resDto = commentService.createComment(reqDto, multipartFile);
 		return BaseResponse.<CommentResDto>builder().result(resDto).message(CommonConstants.COMMENT_CREATE_SUCCESS)
 				.build();
@@ -58,7 +57,8 @@ public class CommentController {
 	@Operation(summary = "API update comment", description = "Update a comment")
 	@ApiResponse(responseCode = "200", description = "Update comment successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentResDto.class)))
 	@ApiResponse(responseCode = "400", description = "Update comment error")
-	public BaseResponse<CommentResDto> updateComment(@RequestPart @Valid CommentReqPutDto reqDto, @RequestPart(required = false) MultipartFile multipartFile) {
+	public BaseResponse<CommentResDto> updateComment(@RequestPart @Valid CommentReqPutDto reqDto,
+			@RequestPart(required = false) MultipartFile multipartFile) {
 		CommentResDto resDto = commentService.updateComment(reqDto, multipartFile);
 		return BaseResponse.<CommentResDto>builder().result(resDto).message(CommonConstants.COMMENT_UPDATE_SUCCESS)
 				.build();

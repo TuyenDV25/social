@@ -47,6 +47,9 @@ public class FriendServiceImpl implements FriendService {
 	@Autowired
 	private UserInfoResponseUtils userInfoResponseUtils;
 
+	/**
+	 * add request friend
+	 */
 	@Override
 	public void addFriendRequest(Long friendRequestId) {
 		UserInfo createRequestuser = userInfoRepository
@@ -115,15 +118,25 @@ public class FriendServiceImpl implements FriendService {
 	private boolean isRequestFriend(UserInfo createRequestuser, UserInfo getRequestuser) {
 
 		List<FriendRequest> listFriendOfGetRequestUser = getRequestuser.getListFriendRequest();
+		List<FriendRequest> listFriendOfCreateRequestUser = createRequestuser.getListFriendRequest();
 
 		for (FriendRequest friend : listFriendOfGetRequestUser) {
 			if (friend.getUserInfo().getId() == createRequestuser.getId()) {
 				return true;
 			}
 		}
+		
+		for (FriendRequest friend : listFriendOfCreateRequestUser) {
+			if (friend.getUserInfo().getId() == getRequestuser.getId()) {
+				return true;
+			}
+		}
 		return false;
 	}
 
+	/**
+	 * remove friend request
+	 */
 	@Override
 	public void removeFriendRequest(Long friendRequestId) {
 
@@ -143,7 +156,9 @@ public class FriendServiceImpl implements FriendService {
 		}
 
 		List<FriendRequest> listFriendOfGetRequestUser = getRequestuser.getListFriendRequest();
-
+		
+		List<FriendRequest> listFriendOfcreateRequestUser = createRequestuser.getListFriendRequest();
+		//user got request cancel request
 		for (FriendRequest friend : listFriendOfGetRequestUser) {
 			if (friend.getUserInfo().getId() == createRequestuser.getId()) {
 				listFriendOfGetRequestUser.remove(friend);
@@ -153,8 +168,21 @@ public class FriendServiceImpl implements FriendService {
 				return;
 			}
 		}
+		//user send request cancel request
+		for (FriendRequest friend : listFriendOfcreateRequestUser) {
+			if (friend.getUserInfo().getId() == getRequestuser.getId()) {
+				listFriendOfcreateRequestUser.remove(friend);
+				createRequestuser.setListFriendRequest(listFriendOfcreateRequestUser);
+				userService.updateUserInfo(createRequestuser);
+				friendRequestRepository.delete(friend);
+				return;
+			}
+		}
 	}
 
+	/**
+	 * get list request friend
+	 */
 	@Override
 	public Page<FriendRequestResDto> getListRequest(Pageable page) {
 
@@ -171,6 +199,9 @@ public class FriendServiceImpl implements FriendService {
 		return new PageImpl<>(listUserInforResDto, page, listUserInforResDto.size());
 	}
 
+	/**
+	 * accept friend
+	 */
 	@Override
 	public void acceptFriendRequest(Long friendRequestId) {
 		// thêm validate ko acept friend chính mình
@@ -188,14 +219,20 @@ public class FriendServiceImpl implements FriendService {
 
 		List<FriendRequest> listFriendRequestOfGetRequestUser = getRequestuser.getListFriendRequest();
 
+		boolean isHaveRequest = false;
 		for (FriendRequest friendRequest : listFriendRequestOfGetRequestUser) {
 			if (friendRequest.getUserInfo().getId() == createRequestuser.getId()) {
+				isHaveRequest = true;
 				listFriendRequestOfGetRequestUser.remove(friendRequest);
 				getRequestuser.setListFriendRequest(listFriendRequestOfGetRequestUser);
 				userService.updateUserInfo(getRequestuser);
 				friendRequestRepository.delete(friendRequest);
 				break;
 			}
+		}
+		// check if have request
+		if (!isHaveRequest) {
+			throw new AppException(ErrorCode.ACCEPT_YOUR_REQUEST);
 		}
 
 		// add friend to list friend
@@ -216,6 +253,9 @@ public class FriendServiceImpl implements FriendService {
 		userService.updateUserInfo(getRequestuser);
 	}
 
+	/**
+	 * remove friend
+	 */
 	@Override
 	public void removeFriend(Long friendRequestId) {
 
@@ -225,6 +265,10 @@ public class FriendServiceImpl implements FriendService {
 
 		if (getRequestuser == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
+		}
+		
+		if (!isFriend(createRequestuser, getRequestuser)) {
+			throw new AppException(ErrorCode.NOT_FRIEND);
 		}
 
 		List<Friend> friendSourceList = createRequestuser.getListFriend();
@@ -250,6 +294,9 @@ public class FriendServiceImpl implements FriendService {
 
 	}
 
+	/**
+	 * get list friend
+	 */
 	@Override
 	public Page<FriendResDto> getListFriend(Pageable page) {
 
@@ -259,7 +306,6 @@ public class FriendServiceImpl implements FriendService {
 		Page<FriendUserInfo> result = friendRepository.findByUserInfo(createRequestuser.getId(), page);
 		List<FriendResDto> listUserInforResDto = result.stream().map(friend -> {
 			FriendResDto friendResDto = new FriendResDto();
-			friendResDto.setId(friend.getId());
 			friendResDto.setCreatedDate(friend.getCreatedDate());
 			friendResDto.setUserInfo(userInfoResponseUtils.convert(userService.findOneById(friend.getUserInfoId())));
 			return friendResDto;

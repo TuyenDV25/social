@@ -36,7 +36,7 @@ public class TimeLikeServiceImpl implements TimeLikeService {
 
 		UserInfo user = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-		Page<Post> pagedResult = postRepository.findByUserInfoId(user.getId(), page);
+		Page<Post> pagedResult = postRepository.findByUserInfo(user, page);
 
 		List<PostPostResDto> postResponseList = pagedResult.stream().filter(
 				post -> post.getUserInfo().getId() == user.getId() || (post.getUserInfo().getId() != user.getId()

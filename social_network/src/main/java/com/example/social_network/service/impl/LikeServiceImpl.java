@@ -5,11 +5,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.social_network.dto.comment.LikeCommentReqDto;
+import com.example.social_network.dto.post.LikePostReqDto;
 import com.example.social_network.entity.Comment;
 import com.example.social_network.entity.Like;
 import com.example.social_network.entity.Post;
 import com.example.social_network.entity.UserInfo;
-import com.example.social_network.enumdef.PostType;
 import com.example.social_network.exception.AppException;
 import com.example.social_network.exception.ErrorCode;
 import com.example.social_network.repository.CommentRepository;
@@ -17,6 +18,7 @@ import com.example.social_network.repository.LikeRepository;
 import com.example.social_network.repository.PostRepository;
 import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.LikeService;
+import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
 
 @Service
@@ -33,11 +35,14 @@ public class LikeServiceImpl implements LikeService {
 
 	@Autowired
 	UserInfoRepository userInfoRepository;
+	
+	@Autowired
+	PostService postService;
 
 	@Override
-	public void likePost(Long postId) {
+	public void likePost(LikePostReqDto reqDto) {
 
-		Post post = postRepository.findOneById(postId);
+		Post post = postRepository.findOneById(reqDto.getId());
 
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
@@ -47,7 +52,7 @@ public class LikeServiceImpl implements LikeService {
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 		// if post not exist or post that only me of other user then can not like
-		if (post.getPrivacy() == PostType.ONLY_ME.getCode() && userInfor.getId() != post.getUserInfo().getId()) {
+		if (!postService.checkRightAccessPost(post, userInfor)) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 
@@ -65,8 +70,8 @@ public class LikeServiceImpl implements LikeService {
 	}
 
 	@Override
-	public void likeComment(Long commentId) {
-		Comment comment = commentRepository.findOneById(commentId);
+	public void likeComment(LikeCommentReqDto reqDto) {
+		Comment comment = commentRepository.findOneById(reqDto.getId());
 		if (comment == null) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}
@@ -78,11 +83,11 @@ public class LikeServiceImpl implements LikeService {
 		Post post = postRepository.findByComments(comment);
 
 		if (post == null) {
-			throw new AppException(ErrorCode.POST_NOTEXISTED);
+			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}
 
-		if ((post.getPrivacy() == PostType.ONLY_ME.getCode() && userInfor.getId() != post.getUserInfo().getId())) {
-			throw new AppException(ErrorCode.POST_NOTEXISTED);
+		if (!postService.checkRightAccessPost(post, userInfor)) {
+			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}
 
 		// check if have liked post before

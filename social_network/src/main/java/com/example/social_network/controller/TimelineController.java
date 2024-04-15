@@ -15,6 +15,9 @@ import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.TimeLikeService;
 import com.example.social_network.utils.CommonConstants;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("api/v1/timeline")
 public class TimelineController {
@@ -23,6 +26,9 @@ public class TimelineController {
 	private TimeLikeService timeLikeService;
 	
 	@GetMapping("/me")
+	@Operation(summary = "API timeline")
+	@ApiResponse(responseCode = "200", description = "get timeline successfully")
+	@ApiResponse(responseCode = "400", description = "get timeline error")
 	BaseResponse<PostListResDto> getTimeLine(@RequestParam Integer pageNumber,
 			@RequestParam Integer pageSize){
 		Pageable paging = PageRequest.of(pageNumber, pageSize);

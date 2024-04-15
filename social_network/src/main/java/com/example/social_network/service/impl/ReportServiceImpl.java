@@ -1,8 +1,9 @@
 package com.example.social_network.service.impl;
 
 import java.io.ByteArrayInputStream;
-import java.time.OffsetDateTime;
+import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,12 +46,13 @@ public class ReportServiceImpl implements ReportService {
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
-		OffsetDateTime to = OffsetDateTime.now();
-		OffsetDateTime from = to.minusDays(7);
+		Date to =new Date();
+		Date from = DateUtils.addDays(to, -7);
+
 
 		Long countFriend = friendRepository.countNewFriends(user.getId(), from, to);
 
-		Long countPost = postRepository.countPosts(user.getId(), from, to);
+		long countPost = postRepository.countPosts(user.getId(), from, to);
 
 		Long countComment = commentRepository.countComment(user.getId(), from, to);
 

@@ -69,7 +69,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostPostResDto createPost(PostPostReqDto reqDto, MultipartFile[] files) {
 
-		//validate input
+		// validate input
 		if (StringUtils.isBlank(reqDto.getContent()) && (files == null || files.length < 1)) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
 		}
@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get());
 
 		Post insertedPost = postRepository.save(post);
-		//add image to cloudnary
+		// add image to cloudnary
 		if (files != null && files.length > 0) {
 			List<Image> imageList = new ArrayList<>();
 			List<ImageResDto> imageResDto = fileService.uploadImage(files);
@@ -109,16 +109,16 @@ public class PostServiceImpl implements PostService {
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 		Post post = postRepository.findOneById(reqDto.getId());
-		
+
 		if (post == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
-		//check if user have right to update the post
+		// check if user have right to update the post
 		if (postRepository.findByUserInfoAndId(user, post.getId()) == null) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 
-		//check data input Post match condition: at least have content or image
+		// check data input Post match condition: at least have content or image
 		if (!checkDataUpdateOK(post, reqDto, files)) {
 			throw new AppException(ErrorCode.POST_UPLOAD_WRONG);
 		}
@@ -214,7 +214,12 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Page<PostPostResDto> getAllPostByKeyword(Integer pageNo, String searchContent) {
 		Pageable paging = PageRequest.of(pageNo, 10);
-		Page<Post> pagedResult = postRepository.findByContentContains(searchContent, paging);
+		Page<Post> pagedResult;
+		if (StringUtils.isBlank(searchContent)) {
+			pagedResult = postRepository.findAll(paging);
+		} else {
+			pagedResult = postRepository.findByContentContains(searchContent, paging);
+		}
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 		List<PostPostResDto> postResponseList = pagedResult.stream()

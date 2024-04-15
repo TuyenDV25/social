@@ -1,14 +1,20 @@
 package com.example.social_network.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.social_network.dto.comment.LikeCommentReqDto;
+import com.example.social_network.dto.post.LikePostReqDto;
 import com.example.social_network.response.BaseResponse;
 import com.example.social_network.service.LikeService;
 import com.example.social_network.utils.CommonConstants;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/like")
@@ -22,9 +28,12 @@ public class LikeController {
 	 * 
 	 * @param postId
 	 */
-	@PostMapping("/post/{postId}")
-	public BaseResponse<?> likePost(@PathVariable("postId") Long postId) {
-		likeService.likePost(postId);
+	@PostMapping("/post")
+	@Operation(summary = "API like post", description = "like or dislike a post")
+	@ApiResponse(responseCode = "200", description = "like or dislike post successfully")
+	@ApiResponse(responseCode = "400", description = "like or dislike post error")
+	public BaseResponse<?> likePost(@Valid @RequestBody LikePostReqDto reqDto) {
+		likeService.likePost(reqDto);
 		return BaseResponse.builder().message(CommonConstants.LIKE_PROCESS).build();
 	}
 	
@@ -33,9 +42,12 @@ public class LikeController {
 	 * 
 	 * @param commentId
 	 */
-	@PostMapping("/comment/{commentId}")
-	public BaseResponse<?> likeComment(@PathVariable("commentId") Long commentId) {
-		likeService.likeComment(commentId);
+	@PostMapping("/comment")
+	@Operation(summary = "API like comment", description = "like or dislike a comment")
+	@ApiResponse(responseCode = "200", description = "like or dislike comment successfully")
+	@ApiResponse(responseCode = "400", description = "like or dislike comment error")
+	public BaseResponse<?> likeComment(@Valid @RequestBody LikeCommentReqDto reqDto) {
+		likeService.likeComment(reqDto);
 		return BaseResponse.builder().message(CommonConstants.LIKE_PROCESS).build();
 	}
 

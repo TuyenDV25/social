@@ -107,7 +107,7 @@ public class PostServiceImpl implements PostService {
 		}
 		// check if user have right to update the post
 		if (postRepository.findByUserInfoAndId(user, post.getId()) == null) {
-			throw new AppException(ErrorCode.POST_NOTEXISTED);
+			throw new AppException(ErrorCode.POST_NOT_RIGHT);
 		}
 
 		// check data input Post match condition: at least have content or image

@@ -7,6 +7,7 @@ import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.dto.utils.ResponseUtilsAdapter;
 import com.example.social_network.dto.utils.comment.CommentResponseUtils;
 import com.example.social_network.dto.utils.like.LikeResponseUtils;
+import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
 import com.example.social_network.entity.Post;
 import com.example.social_network.mapper.image.ImageResponseMapper;
 import com.example.social_network.mapper.post.PostResponseMapper;
@@ -36,6 +37,10 @@ public class PostResponseUtils extends ResponseUtilsAdapter<Post, PostPostResDto
 
 	@Autowired
 	private LikeResponseUtils likeResponseUtils;
+	
+	@Autowired
+	private UserInfoResponseUtils userResponseUtils;
+	
 
 	@Override
 	public PostPostResDto convert(Post entity) {
@@ -45,6 +50,7 @@ public class PostResponseUtils extends ResponseUtilsAdapter<Post, PostPostResDto
 		resDto.setCommentCount(commentRepository.countByPost(entity));
 		resDto.setComments(commentResponseUtils.convert(entity.getComments()));
 		resDto.setLikes(likeResponseUtils.convert(entity.getLikes()));
+		resDto.setUserInfo(userResponseUtils.convert(entity.getUserInfo()));
 		return resDto;
 	}
 

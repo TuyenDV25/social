@@ -23,6 +23,7 @@ public enum ErrorCode {
 	FILE_SIZE(1005, "your file over 5mb", HttpStatus.BAD_REQUEST),
 	FILE_UPLOAD(1012, "upload image error", HttpStatus.BAD_REQUEST),
 	POST_NOTEXISTED(1002, "post not existed", HttpStatus.BAD_REQUEST),
+	POST_NOT_RIGHT(1002, "you can not fix other's post", HttpStatus.BAD_REQUEST),
 	COMMENT_NOTEXISTED(1002, "comment not existed", HttpStatus.BAD_REQUEST),
 	POST_UPLOAD_WRONG(1004, "post must have at least content or file", HttpStatus.BAD_REQUEST),
 	ADD_FRIEND_YOUSELF(1004, "You can not add friend youself", HttpStatus.BAD_REQUEST),

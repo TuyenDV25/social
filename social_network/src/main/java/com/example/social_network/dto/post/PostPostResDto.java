@@ -7,6 +7,7 @@ import com.example.social_network.dto.AbstractDto;
 import com.example.social_network.dto.comment.CommentResDto;
 import com.example.social_network.dto.image.ImageResDto;
 import com.example.social_network.dto.like.LikeResDto;
+import com.example.social_network.dto.user.UserInforResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -34,6 +35,9 @@ public class PostPostResDto extends AbstractDto {
 
 	@JsonProperty("cmt_count")
 	private Long commentCount;
+	
+	@JsonProperty("userInfo")
+	private UserInforResDto userInfo;
 
 	public String getContent() {
 		return content;
@@ -90,4 +94,13 @@ public class PostPostResDto extends AbstractDto {
 	public void setCommentCount(Long commentCount) {
 		this.commentCount = commentCount;
 	}
+
+	public UserInforResDto getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInforResDto userInfo) {
+		this.userInfo = userInfo;
+	}
+	
 }

@@ -7,10 +7,12 @@ import com.example.social_network.dto.image.ImageResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserInforResDto extends AbstractDto {
 	private String username;
 

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +29,6 @@ import com.example.social_network.entity.UserInfo;
 import com.example.social_network.enumdef.PostType;
 import com.example.social_network.exception.AppException;
 import com.example.social_network.exception.ErrorCode;
-import com.example.social_network.mapper.image.ImageResponseMapper;
 import com.example.social_network.mapper.post.PostRequestMapper;
 import com.example.social_network.repository.PostRepository;
 import com.example.social_network.repository.UserInfoRepository;
@@ -39,29 +37,23 @@ import com.example.social_network.service.ImageService;
 import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-	@Autowired
-	PostRequestMapper postMapper;
+	private final PostRequestMapper postMapper;
 
-	@Autowired
-	ImageResponseMapper imageMapper;
+	private final FileService fileService;
 
-	@Autowired
-	FileService fileService;
+	private final ImageService imageService;
 
-	@Autowired
-	ImageService imageService;
+	private final UserInfoRepository userInfoRepository;
 
-	@Autowired
-	UserInfoRepository userInfoRepository;
+	private final PostRepository postRepository;
 
-	@Autowired
-	PostRepository postRepository;
-
-	@Autowired
-	PostResponseUtils postResponseUtils;
+	private final PostResponseUtils postResponseUtils;
 
 	/**
 	 * create post

@@ -6,12 +6,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserInfoPutReqDto {
 
 	@Length(min = 3, max = 20, message = "must be from 3 to 20 characters!")
@@ -31,8 +33,8 @@ public class UserInfoPutReqDto {
 	private String gender;
 
 	@JsonProperty("hometown")
-	private Long idHomeTown;
+	private long idHomeTown;
 
 	@JsonProperty("current_city")
-	private Long idCurrentCity;
+	private long idCurrentCity;
 }

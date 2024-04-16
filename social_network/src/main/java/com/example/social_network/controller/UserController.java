@@ -1,6 +1,5 @@
 package com.example.social_network.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,16 +22,17 @@ import com.example.social_network.utils.CommonConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 /**
  * TuyenDV
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/user")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 
 	@PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API update info of user")

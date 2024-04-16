@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.social_network.dto.image.ImageResDto;
@@ -28,20 +28,20 @@ import com.example.social_network.service.UserService;
 import com.example.social_network.utils.CommonConstants;
 import com.example.social_network.utils.Utils;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserInfoRepository userInfoRepository;
+	private final UserInfoRepository userInfoRepository;
 
-	@Autowired
-	private UserInfoResponseUtils userInfoResponseUtils;
+	private final UserInfoResponseUtils userInfoResponseUtils;
 
-	@Autowired
-	private ImageService imageService;
+	private final ImageService imageService;
 
-	@Autowired
-	private FileService fileService;
+	private final FileService fileService;
 
 	@Override
 	public UserInforResDto updateInfo(UserInfoPutReqDto reqDto, MultipartFile[] multipartFile) {

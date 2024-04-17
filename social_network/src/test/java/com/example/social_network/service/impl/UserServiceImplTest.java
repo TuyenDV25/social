@@ -170,6 +170,14 @@ public class UserServiceImplTest {
 	
 	@Test
 	void findOneById_notBlank_validRequest_success() {
+		UserInfo userTest = new UserInfo();
+		userTest.setLastName("Tester");
+		userTest.setFirstName("Dov");
+		userTest.setDob(Utils.convertStringToLocalDate("19991111"));
+		userTest.setIntroyourself("minh ten a");
+		userTest.setGender(true);
+		userTest.setAvatarImage(new ArrayList<Image>());
+		when(userInfoRepository.findOneById(any())).thenReturn(userTest);
 		userServiceImpl.findOneById(1L);
 		
 	}

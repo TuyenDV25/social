@@ -15,7 +15,7 @@ public interface PostService {
 
 	PostPostResDto createPost(PostPostReqDto reqDto, MultipartFile[] files);
 
-	PostPostResDto update(PostPutReqDto reqDto, MultipartFile[] files);
+	PostPostResDto update(Long id, PostPutReqDto reqDto, MultipartFile[] files);
 
 	DeletePostResDto delete(Long id);
 
@@ -25,7 +25,7 @@ public interface PostService {
 
 	Page<PostPostResDto> getAllPostByKeyword(Integer pageNo, String searchContent);
 
-	PostPostResDto updatePrivacy(PostPrivacyPutReqDto reqDto);
+	PostPostResDto updatePrivacy(Long postId, PostPrivacyPutReqDto reqDto);
 	
 	boolean checkRightAccessPost(Post post, UserInfo user);
 }

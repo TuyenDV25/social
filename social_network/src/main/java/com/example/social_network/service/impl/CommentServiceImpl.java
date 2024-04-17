@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,41 +33,37 @@ import com.example.social_network.service.ImageService;
 import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-	@Autowired
-	private PostRepository postRepository;
+	private final PostRepository postRepository;
 
-	@Autowired
-	private CommentRepository commentRepository;
+	private final CommentRepository commentRepository;
 
-	@Autowired
-	private UserInfoRepository userInfoRepository;
+	private final UserInfoRepository userInfoRepository;
 
-	@Autowired
-	private FileService fileService;
+	private final FileService fileService;
 
-	@Autowired
-	ImageService imageService;
+	private final ImageService imageService;
 
-	@Autowired
-	PostService postService;
+	private final PostService postService;
 
-	@Autowired
-	CommentResponseUtils commentResponseUtils;
+	private final CommentResponseUtils commentResponseUtils;
 
 	/**
 	 * create comment
 	 */
 	@Override
-	public CommentResDto createComment(CommentReqPostDto reqDto, MultipartFile files) {
+	public CommentResDto createComment(Long postId, CommentReqPostDto reqDto, MultipartFile files) {
 
 		if (StringUtils.isBlank(reqDto.getContent()) && files == null) {
 			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
 		}
 
-		Post post = postRepository.findOneById(reqDto.getId());
+		Post post = postRepository.findOneById(postId);
 
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -98,9 +93,9 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public CommentResDto updateComment(CommentReqPutDto reqDto, MultipartFile files) {
+	public CommentResDto updateComment(Long commentId, CommentReqPutDto reqDto, MultipartFile files) {
 
-		Comment comment = commentRepository.findOneById(reqDto.getId());
+		Comment comment = commentRepository.findOneById(commentId);
 
 		if (!checkDataUpdateOK(comment, reqDto, files)) {
 			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
@@ -109,7 +104,7 @@ public class CommentServiceImpl implements CommentService {
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
-		if (comment == null || commentRepository.findByUserAndId(userInfor, reqDto.getId()) == null
+		if (comment == null || commentRepository.findByUserAndId(userInfor, commentId) == null
 				|| !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
 		}

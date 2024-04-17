@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostPostResDto extends AbstractDto {
+	
+	private Long id;
 
 	private String content;
 
@@ -102,5 +104,12 @@ public class PostPostResDto extends AbstractDto {
 	public void setUserInfo(UserInforResDto userInfo) {
 		this.userInfo = userInfo;
 	}
-	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

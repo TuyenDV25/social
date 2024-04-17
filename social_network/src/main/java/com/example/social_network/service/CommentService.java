@@ -9,9 +9,9 @@ import com.example.social_network.dto.comment.CommentResDto;
 
 public interface CommentService {
 
-	CommentResDto createComment(CommentReqPostDto reqDto, MultipartFile files);
+	CommentResDto createComment(Long postId, CommentReqPostDto reqDto, MultipartFile files);
 
-	CommentResDto updateComment(CommentReqPutDto reqDto, MultipartFile files);
+	CommentResDto updateComment(Long commentId, CommentReqPutDto reqDto, MultipartFile files);
 
 	void delete(Long id);
 

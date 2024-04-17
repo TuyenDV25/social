@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserInforResDto extends AbstractDto {
+	
+	private Long id;
+	
 	private String username;
 
 	private boolean gender;
@@ -85,5 +88,13 @@ public class UserInforResDto extends AbstractDto {
 
 	public void setAvatar(ImageResDto avatar) {
 		this.avatar = avatar;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }

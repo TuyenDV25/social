@@ -22,7 +22,6 @@ import com.example.social_network.dto.post.PostPostReqDto;
 import com.example.social_network.dto.post.PostPostResDto;
 import com.example.social_network.dto.post.PostPrivacyPutReqDto;
 import com.example.social_network.dto.post.PostPutReqDto;
-import com.example.social_network.dto.user.UserInforResDto;
 import com.example.social_network.service.PostService;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,12 +54,12 @@ public class PostControllerTest {
 	@Test
 	void UpdatePost_validRequest_success() throws Exception {
 
-		when(postService.update(any(), any())).thenReturn(mock(PostPostResDto.class));
+		when(postService.update(any(), any(),any())).thenReturn(mock(PostPostResDto.class));
 
 		var input = new PostPutReqDto();
 		MultipartFile[] file = { mock(MultipartFile.class) };
 
-		var result = postController.updatePost(input, file);
+		var result = postController.updatePost(1L,input, file);
 
 		assertEquals(1000, result.getCode());
 		assertEquals("update post successfully", result.getMessage());
@@ -70,11 +69,11 @@ public class PostControllerTest {
 	@Test
 	void UpdatePrivacy_validRequest_success() throws Exception {
 
-		when(postService.updatePrivacy(any())).thenReturn(mock(PostPostResDto.class));
+		when(postService.updatePrivacy(any(), any())).thenReturn(mock(PostPostResDto.class));
 
 		var input = new PostPrivacyPutReqDto();
 
-		var result = postController.updatePrivacy(input);
+		var result = postController.updatePrivacy(1L,input);
 
 		assertEquals(1000, result.getCode());
 		assertEquals("update Post privacy successfully", result.getMessage());

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,6 +49,7 @@ public class PostController {
 	@Operation(summary = "API create post", description = "create a post")
 	@ApiResponse(responseCode = "200", description = "create post successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPostReqDto.class)))
 	@ApiResponse(responseCode = "400", description = "create post error")
+	@ApiResponse(responseCode = "401", description = "UserName not found")
 	BaseResponse<PostPostResDto> createPost(
 			@RequestPart(name = "reqDto", required = false) @Valid PostPostReqDto reqDto,
 			@RequestPart(name = "multipartFile", required = false) MultipartFile[] multipartFile) {
@@ -62,23 +64,27 @@ public class PostController {
 	 * @param reqDto {@link PostPutReqDto}
 	 * @return {@link PostPostResDto}
 	 */
-	@PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	@PutMapping(value = "/{id}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@Operation(summary = "API update post", description = "Update Post")
 	@ApiResponse(responseCode = "200", description = "Update post successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPutReqDto.class)))
 	@ApiResponse(responseCode = "400", description = "Update post error")
-	BaseResponse<PostPostResDto> updatePost(@RequestPart @Valid PostPutReqDto reqDto,
+	@ApiResponse(responseCode = "401", description = "UserName not found")
+	@ApiResponse(responseCode = "404", description = "Update post not existed")
+	BaseResponse<PostPostResDto> updatePost(@PathVariable("id") Long idPost, @RequestPart @Valid PostPutReqDto reqDto,
 			@RequestPart(required = false) MultipartFile[] multipartFile) {
-		PostPostResDto resDto = postService.update(reqDto, multipartFile);
+		PostPostResDto resDto = postService.update(idPost, reqDto, multipartFile);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_UPDATE_SUCCESS)
 				.build();
 	}
 
-	@PutMapping(value = "/update-privacy")
+	@PatchMapping(value = "/update-privacy/{postId}")
 	@Operation(summary = "API update privacy", description = "Update privacy of post")
-	@ApiResponse(responseCode = "200", description = "Update privacy thành công", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPrivacyPutReqDto.class)))
-	@ApiResponse(responseCode = "400", description = "Update privacy không thành công")
-	BaseResponse<PostPostResDto> updatePrivacy(@Valid @RequestBody PostPrivacyPutReqDto reqDto) {
-		PostPostResDto resDto = postService.updatePrivacy(reqDto);
+	@ApiResponse(responseCode = "200", description = "Update privacy successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPrivacyPutReqDto.class)))
+	@ApiResponse(responseCode = "401", description = "UserName not found")
+	@ApiResponse(responseCode = "404", description = "Update post not existed")
+	@ApiResponse(responseCode = "400", description = "Update post error")
+	BaseResponse<PostPostResDto> updatePrivacy(@PathVariable("id") Long idPost, @Valid @RequestBody PostPrivacyPutReqDto reqDto) {
+		PostPostResDto resDto = postService.updatePrivacy(idPost, reqDto);
 		return BaseResponse.<PostPostResDto>builder().result(resDto)
 				.message(CommonConstants.POST_UPDATE_PRIVACY_SUCCESS).build();
 	}
@@ -91,7 +97,9 @@ public class PostController {
 	 */
 	@Operation(summary = "API delete post", description = "Delete Post")
 	@ApiResponse(responseCode = "200", description = "Delete post successfully")
-	@ApiResponse(responseCode = "400", description = "Delete post error")
+	@ApiResponse(responseCode = "401", description = "UserName not found")
+	@ApiResponse(responseCode = "404", description = "Delete post not existed")
+	@ApiResponse(responseCode = "400", description = "delete post error")
 	@DeleteMapping("/{id}")
 	public BaseResponse<DeletePostResDto> deletePost(@PathVariable("id") Long idPost) {
 		DeletePostResDto resDto = postService.delete(idPost);
@@ -106,9 +114,10 @@ public class PostController {
 	 * @return {@link PostPostResDto}
 	 */
 	@GetMapping("/{id}")
-	@Operation(summary = "API get detail post")
-	@ApiResponse(responseCode = "200", description = "get detail post successfully")
-	@ApiResponse(responseCode = "400", description = "get detail post error")
+	@Operation(summary = "API Get detail post")
+	@ApiResponse(responseCode = "200", description = "Get detail post successfully")
+	@ApiResponse(responseCode = "401", description = "UserName not found")
+	@ApiResponse(responseCode = "404", description = "Get detail post not existed")
 	public BaseResponse<PostPostResDto> getPost(@PathVariable("id") Long idPost) {
 		PostPostResDto resDto = postService.getPostDetail(idPost);
 		return BaseResponse.<PostPostResDto>builder().result(resDto).message(CommonConstants.POST_DETAIL_SUCCESS)
@@ -124,6 +133,8 @@ public class PostController {
 	@GetMapping("all/{id}")
 	@Operation(summary = "API get list post")
 	@ApiResponse(responseCode = "200", description = "Get list post successfully")
+	@ApiResponse(responseCode = "401", description = "UserName not found")
+	@ApiResponse(responseCode = "404", description = "Get post of user not existed")
 	public BaseResponse<PostListResDto> getUserAllPost(@PathVariable("id") Long id,
 			@RequestParam Integer pageNumber) {
 		Page<PostPostResDto> result = postService.getUserAllPost(id, pageNumber);
@@ -141,6 +152,7 @@ public class PostController {
 	@GetMapping("search")
 	@Operation(summary = "API get list post by name")
 	@ApiResponse(responseCode = "200", description = "Get list post by Name successfully")
+	@ApiResponse(responseCode = "401", description = "UserName not found")
 	public BaseResponse<PostListResDto> getAllPostByKeyword(@RequestParam Integer pageNumber, @RequestParam String searchContent) {
 		Page<PostPostResDto> result = postService.getAllPostByKeyword(pageNumber, searchContent);
 		return BaseResponse.<PostListResDto>builder().result(PostListResDto.builder().listPost(result).build())

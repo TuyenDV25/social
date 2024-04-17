@@ -21,6 +21,8 @@ import com.example.social_network.dto.user.UserInforResDto;
 import com.example.social_network.dto.utils.user.UserInfoResponseUtils;
 import com.example.social_network.entity.Image;
 import com.example.social_network.entity.UserInfo;
+import com.example.social_network.exception.AppException;
+import com.example.social_network.exception.ErrorCode;
 import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.FileService;
 import com.example.social_network.service.ImageService;
@@ -116,6 +118,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserInfo findOneById(Long id) {
+		UserInfo user = userInfoRepository.findOneById(id);
+		if (user == null) {
+			throw new  AppException(ErrorCode.USER_NOT_EXISTED);
+		}
 		return userInfoRepository.findOneById(id);
 	}
 

@@ -1,6 +1,5 @@
 package com.example.social_network.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +14,14 @@ import com.example.social_network.utils.CommonConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/like")
 public class LikeController {
 
-	@Autowired
-	private LikeService likeService;
+	private final LikeService likeService;
 
 	/**
 	 * like or dislike post
@@ -36,7 +36,7 @@ public class LikeController {
 		likeService.likePost(reqDto);
 		return BaseResponse.builder().message(CommonConstants.LIKE_PROCESS).build();
 	}
-	
+
 	/**
 	 * like or dislike comment
 	 * 

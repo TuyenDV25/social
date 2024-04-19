@@ -3,11 +3,11 @@ package com.example.social_network.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.social_network.dto.friend.FriendRequestResDto;
@@ -25,35 +25,36 @@ import com.example.social_network.repository.FriendRequestRepository;
 import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.FriendService;
 import com.example.social_network.service.UserService;
+import com.example.social_network.utils.CommonConstants;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class FriendServiceImpl implements FriendService {
 
-	@Autowired
-	UserInfoRepository userInfoRepository;
+	private final UserInfoRepository userInfoRepository;
 
-	@Autowired
-	FriendRequestRepository friendRequestRepository;
+	private final FriendRequestRepository friendRequestRepository;
 
-	@Autowired
-	FriendRepository friendRepository;
+	private final FriendRepository friendRepository;
 
-	@Autowired
-	UserService userService;
+	private final UserService userService;
 
-	@Autowired
-	UserMapper userMapper;
+	private final UserMapper userMapper;
 
-	@Autowired
-	private UserInfoResponseUtils userInfoResponseUtils;
+	private final UserInfoResponseUtils userInfoResponseUtils;
 
 	/**
 	 * add request friend
 	 */
 	@Override
-	public void addFriendRequest(Long friendRequestId) {
+	public Integer addFriendRequest(Long friendRequestId) {
+
 		UserInfo createRequestuser = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+
 		UserInfo getRequestuser = userInfoRepository.findOneById(friendRequestId);
 		if (getRequestuser == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
@@ -71,6 +72,27 @@ public class FriendServiceImpl implements FriendService {
 			throw new AppException(ErrorCode.ADD_REQUEST_AGAIN_TO_FRIEND);
 		}
 
+		// if have request then add friend
+		if (isRequestFriend(getRequestuser, createRequestuser)) {
+			// add friend to list friend
+			List<Friend> listFriendOfcreateRequestUser = createRequestuser.getListFriend();
+			Friend friend = new Friend();
+			friend.setUserInfo(getRequestuser);
+			friendRepository.save(friend);
+			listFriendOfcreateRequestUser.add(friend);
+			createRequestuser.setListFriend(listFriendOfcreateRequestUser);
+			userService.updateUserInfo(getRequestuser);
+
+			List<Friend> listFriendOfGetRequestUser = getRequestuser.getListFriend();
+			friend = new Friend();
+			friend.setUserInfo(createRequestuser);
+			friendRepository.save(friend);
+			listFriendOfGetRequestUser.add(friend);
+			getRequestuser.setListFriend(listFriendOfGetRequestUser);
+			userService.updateUserInfo(getRequestuser);
+			return 1;
+		}
+
 		FriendRequest request = new FriendRequest();
 		request.setUserInfo(createRequestuser);
 		friendRequestRepository.save(request);
@@ -78,6 +100,7 @@ public class FriendServiceImpl implements FriendService {
 		listRequest.add(request);
 		getRequestuser.setListFriendRequest(listRequest);
 		userService.updateUserInfo(getRequestuser);
+		return 2;
 	}
 
 	/**
@@ -88,19 +111,10 @@ public class FriendServiceImpl implements FriendService {
 	 * @return true: is friend, false is not friend
 	 */
 	private boolean isFriend(UserInfo createRequestuser, UserInfo getRequestuser) {
-		// check if have been friend
-		List<Friend> listFriendOfCreatetRequestUser = createRequestuser.getListFriend();
-
 		List<Friend> listFriendOfGetRequestUser = getRequestuser.getListFriend();
 
 		for (Friend friend : listFriendOfGetRequestUser) {
 			if (friend.getUserInfo().getId() == createRequestuser.getId()) {
-				return true;
-			}
-		}
-
-		for (Friend friend : listFriendOfCreatetRequestUser) {
-			if (friend.getUserInfo().getId() == getRequestuser.getId()) {
 				return true;
 			}
 		}
@@ -118,16 +132,9 @@ public class FriendServiceImpl implements FriendService {
 	private boolean isRequestFriend(UserInfo createRequestuser, UserInfo getRequestuser) {
 
 		List<FriendRequest> listFriendOfGetRequestUser = getRequestuser.getListFriendRequest();
-		List<FriendRequest> listFriendOfCreateRequestUser = createRequestuser.getListFriendRequest();
 
 		for (FriendRequest friend : listFriendOfGetRequestUser) {
 			if (friend.getUserInfo().getId() == createRequestuser.getId()) {
-				return true;
-			}
-		}
-		
-		for (FriendRequest friend : listFriendOfCreateRequestUser) {
-			if (friend.getUserInfo().getId() == getRequestuser.getId()) {
 				return true;
 			}
 		}
@@ -141,24 +148,23 @@ public class FriendServiceImpl implements FriendService {
 	public void removeFriendRequest(Long friendRequestId) {
 
 		UserInfo createRequestuser = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+
 		UserInfo getRequestuser = userInfoRepository.findOneById(friendRequestId);
 		if (getRequestuser == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		}
 
-		if (!isRequestFriend(createRequestuser, getRequestuser)) {
-			throw new AppException(ErrorCode.REMOVE_REQUEST_AGAIN_TO_FRIEND);
-		}
-
-		if (isFriend(createRequestuser, getRequestuser)) {
-			throw new AppException(ErrorCode.REMOVE_REQUEST_TO_FRIEND);
+		if (!isRequestFriend(createRequestuser, getRequestuser)
+				&& !isRequestFriend(getRequestuser, createRequestuser)) {
+			throw new AppException(ErrorCode.NOT_EXIST_REQUEST);
 		}
 
 		List<FriendRequest> listFriendOfGetRequestUser = getRequestuser.getListFriendRequest();
-		
+
 		List<FriendRequest> listFriendOfcreateRequestUser = createRequestuser.getListFriendRequest();
-		//user got request cancel request
+		// user got request cancel request
 		for (FriendRequest friend : listFriendOfGetRequestUser) {
 			if (friend.getUserInfo().getId() == createRequestuser.getId()) {
 				listFriendOfGetRequestUser.remove(friend);
@@ -168,7 +174,7 @@ public class FriendServiceImpl implements FriendService {
 				return;
 			}
 		}
-		//user send request cancel request
+		// user send request cancel request
 		for (FriendRequest friend : listFriendOfcreateRequestUser) {
 			if (friend.getUserInfo().getId() == getRequestuser.getId()) {
 				listFriendOfcreateRequestUser.remove(friend);
@@ -187,7 +193,8 @@ public class FriendServiceImpl implements FriendService {
 	public Page<FriendRequestResDto> getListRequest(Pageable page) {
 
 		UserInfo createRequestuser = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
 		Page<FriendRequest> result = friendRequestRepository.findByUserInfo(createRequestuser.getId(), page);
 		List<FriendRequestResDto> listUserInforResDto = result.stream().map(request -> {
@@ -206,33 +213,32 @@ public class FriendServiceImpl implements FriendService {
 	public void acceptFriendRequest(Long friendRequestId) {
 		// thêm validate ko acept friend chính mình
 		UserInfo getRequestuser = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 		UserInfo createRequestuser = userInfoRepository.findOneById(friendRequestId);
 
-		if (getRequestuser == null) {
+		if (createRequestuser == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		}
 
+		if (getRequestuser.getId() == friendRequestId) {
+			throw new AppException(ErrorCode.ACCEPT_YOUR_REQUEST);
+		}
+
 		if (!isRequestFriend(createRequestuser, getRequestuser)) {
-			throw new AppException(ErrorCode.REMOVE_REQUEST_AGAIN_TO_FRIEND);
+			throw new AppException(ErrorCode.NOT_EXIST_FRIEND_REQUEST);
 		}
 
 		List<FriendRequest> listFriendRequestOfGetRequestUser = getRequestuser.getListFriendRequest();
 
-		boolean isHaveRequest = false;
 		for (FriendRequest friendRequest : listFriendRequestOfGetRequestUser) {
 			if (friendRequest.getUserInfo().getId() == createRequestuser.getId()) {
-				isHaveRequest = true;
 				listFriendRequestOfGetRequestUser.remove(friendRequest);
 				getRequestuser.setListFriendRequest(listFriendRequestOfGetRequestUser);
 				userService.updateUserInfo(getRequestuser);
 				friendRequestRepository.delete(friendRequest);
 				break;
 			}
-		}
-		// check if have request
-		if (!isHaveRequest) {
-			throw new AppException(ErrorCode.ACCEPT_YOUR_REQUEST);
 		}
 
 		// add friend to list friend
@@ -260,13 +266,18 @@ public class FriendServiceImpl implements FriendService {
 	public void removeFriend(Long friendRequestId) {
 
 		UserInfo createRequestuser = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 		UserInfo getRequestuser = userInfoRepository.findOneById(friendRequestId);
 
 		if (getRequestuser == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		}
 		
+		if (createRequestuser.getId() == friendRequestId) {
+			throw new AppException(ErrorCode.REMOVE_FRIEND_YOURSELF);
+		}
+
 		if (!isFriend(createRequestuser, getRequestuser)) {
 			throw new AppException(ErrorCode.NOT_FRIEND);
 		}
@@ -301,7 +312,8 @@ public class FriendServiceImpl implements FriendService {
 	public Page<FriendResDto> getListFriend(Pageable page) {
 
 		UserInfo createRequestuser = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
 		Page<FriendUserInfo> result = friendRepository.findByUserInfo(createRequestuser.getId(), page);
 		List<FriendResDto> listUserInforResDto = result.stream().map(friend -> {

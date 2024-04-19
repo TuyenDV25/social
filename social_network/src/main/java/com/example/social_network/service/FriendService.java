@@ -8,7 +8,7 @@ import com.example.social_network.dto.friend.FriendResDto;
 
 public interface FriendService {
 
-	void addFriendRequest(Long friendRequestId);
+	Integer addFriendRequest(Long friendRequestId);
 
 	void removeFriendRequest(Long friendRequestId);
 

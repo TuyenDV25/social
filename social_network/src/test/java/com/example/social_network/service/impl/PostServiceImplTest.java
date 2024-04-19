@@ -192,10 +192,6 @@ public class PostServiceImplTest {
 		image.setId(1L);
 		image.setLinkImage("24h.com");
 
-//		Image image2 = new Image();
-//		image.setId(2L);
-//		image.setLinkImage("abc.com");
-
 		when(imageService.findOneById(1L)).thenReturn(image);
 
 		Post afterSavePost = new Post();
@@ -203,12 +199,6 @@ public class PostServiceImplTest {
 		afterSavePost.setPrivacy(1);
 
 		when(postRepository.save(post)).thenReturn(afterSavePost);
-
-//		var listImage = new ArrayList<ImageResDto>();
-//		listImage.add(ImageResDto.builder().id(2).linkImage("abc.com").build());
-//		when(fileService.uploadImage(any())).thenReturn(listImage);
-//		
-//		when(imageService.findOneById(2L)).thenReturn(image2);
 
 		PostPostResDto resDto = new PostPostResDto();
 		resDto.setContent("nay di chơi");

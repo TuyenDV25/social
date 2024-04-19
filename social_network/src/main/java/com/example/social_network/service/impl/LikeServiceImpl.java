@@ -1,6 +1,5 @@
 package com.example.social_network.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -21,23 +20,21 @@ import com.example.social_network.service.LikeService;
 import com.example.social_network.service.PostService;
 import com.example.social_network.utils.CommonConstants;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
 
-	@Autowired
-	private LikeRepository likeRepository;
+	private final LikeRepository likeRepository;
 
-	@Autowired
-	private PostRepository postRepository;
+	private final PostRepository postRepository;
 
-	@Autowired
-	private CommentRepository commentRepository;
+	private final CommentRepository commentRepository;
 
-	@Autowired
-	UserInfoRepository userInfoRepository;
-	
-	@Autowired
-	PostService postService;
+	private final UserInfoRepository userInfoRepository;
+
+	private final PostService postService;
 
 	@Override
 	public void likePost(LikePostReqDto reqDto) {
@@ -82,12 +79,8 @@ public class LikeServiceImpl implements LikeService {
 
 		Post post = postRepository.findByComments(comment);
 
-		if (post == null) {
-			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
-		}
-
 		if (!postService.checkRightAccessPost(post, userInfor)) {
-			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 
 		// check if have liked post before

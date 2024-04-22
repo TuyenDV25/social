@@ -1,6 +1,5 @@
 package com.example.social_network.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,14 +14,15 @@ import com.example.social_network.service.ReportService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 
 @CrossOrigin("http://localhost:8080")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/report")
 public class ReportController {
 
-	@Autowired
-	ReportService reportService;
+	private final ReportService reportService;
 
 	@GetMapping()
 	@Operation(summary = "API dowload report")

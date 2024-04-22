@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,17 +19,17 @@ import com.example.social_network.mapper.image.ImageResponseMapper;
 import com.example.social_network.repository.ImageRepository;
 import com.example.social_network.service.FileService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
-	@Autowired
-	Cloudinary cloudinary;
+	private final Cloudinary cloudinary;
 
-	@Autowired
-	ImageRepository imageRepository;
+	private final ImageRepository imageRepository;
 
-	@Autowired
-	ImageResponseMapper imageMapper;
+	private final ImageResponseMapper imageMapper;
 
 	@Override
 	public List<ImageResDto> uploadImage(MultipartFile[] files) {

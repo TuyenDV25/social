@@ -19,7 +19,7 @@ public class ExcelHelper {
 	static String[] HEADERs = { "Total Post", "Total New Friend", "Total Like", "Total Comment" };
 	static String SHEET = "reports";
 
-	public static ByteArrayInputStream tutorialsToExcel(Long countFriends, Long countPost,
+	public static ByteArrayInputStream reportToExcel(Long countFriends, Long countPost,
 			Long countComment, Long countLikes) {
 
 		try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {

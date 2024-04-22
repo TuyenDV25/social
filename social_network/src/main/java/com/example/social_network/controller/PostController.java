@@ -77,6 +77,13 @@ public class PostController {
 				.build();
 	}
 
+	/**
+	 * update privacy of the post
+	 * 
+	 * @param idPost
+	 * @param reqDto
+	 * @return {@link PostPostResDto}
+	 */
 	@PatchMapping(value = "/update-privacy/{postId}")
 	@Operation(summary = "API update privacy", description = "Update privacy of post")
 	@ApiResponse(responseCode = "200", description = "Update privacy successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPrivacyPutReqDto.class)))

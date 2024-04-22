@@ -1,17 +1,18 @@
 package com.example.social_network.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.social_network.entity.Image;
 import com.example.social_network.repository.ImageRepository;
 import com.example.social_network.service.ImageService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-	@Autowired
-	ImageRepository imageRepository;
+	private final ImageRepository imageRepository;
 
 	@Override
 	public Image findOneById(Long id) {

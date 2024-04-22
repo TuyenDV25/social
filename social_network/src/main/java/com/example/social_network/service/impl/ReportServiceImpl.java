@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,23 +19,21 @@ import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.ReportService;
 import com.example.social_network.utils.CommonConstants;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-	@Autowired
-	private UserInfoRepository userInfoRepository;
+	private final UserInfoRepository userInfoRepository;
 
-	@Autowired
-	private FriendRepository friendRepository;
+	private final FriendRepository friendRepository;
 
-	@Autowired
-	private PostRepository postRepository;
+	private final PostRepository postRepository;
 
-	@Autowired
-	private CommentRepository commentRepository;
+	private final CommentRepository commentRepository;
 
-	@Autowired
-	private LikeRepository likeRepository;
+	private final LikeRepository likeRepository;
 
 	@Override
 	public ByteArrayInputStream load() {
@@ -46,9 +43,8 @@ public class ReportServiceImpl implements ReportService {
 		UserInfo user = userInfoRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
-		Date to =new Date();
+		Date to = new Date();
 		Date from = DateUtils.addDays(to, -7);
-
 
 		Long countFriend = friendRepository.countNewFriends(user.getId(), from, to);
 
@@ -58,7 +54,7 @@ public class ReportServiceImpl implements ReportService {
 
 		Long countLike = likeRepository.countLike(user.getId(), from, to);
 
-		return ExcelHelper.tutorialsToExcel(countFriend, countPost, countComment, countLike);
+		return ExcelHelper.reportToExcel(countFriend, countPost, countComment, countLike);
 
 	}
 }

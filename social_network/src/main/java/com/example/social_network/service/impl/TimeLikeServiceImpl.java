@@ -3,11 +3,11 @@ package com.example.social_network.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.social_network.dto.post.PostPostResDto;
@@ -18,24 +18,27 @@ import com.example.social_network.enumdef.PostType;
 import com.example.social_network.repository.PostRepository;
 import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.TimeLikeService;
+import com.example.social_network.utils.CommonConstants;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class TimeLikeServiceImpl implements TimeLikeService {
 
-	@Autowired
-	PostRepository postRepository;
+	private final PostRepository postRepository;
 
-	@Autowired
-	UserInfoRepository userInfoRepository;
+	private final UserInfoRepository userInfoRepository;
 
-	@Autowired
-	PostResponseUtils postResponseUtils;
+	private final PostResponseUtils postResponseUtils;
 
 	@Override
 	public Page<PostPostResDto> getTimeLinePost(Pageable page) {
 
 		UserInfo user = userInfoRepository
-				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+		
 		Page<Post> pagedResult = postRepository.findByUserInfo(user, page);
 
 		List<PostPostResDto> postResponseList = pagedResult.stream().filter(

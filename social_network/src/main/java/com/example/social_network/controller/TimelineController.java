@@ -1,6 +1,5 @@
 package com.example.social_network.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,20 +16,20 @@ import com.example.social_network.utils.CommonConstants;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/timeline")
 public class TimelineController {
-	
-	@Autowired
-	private TimeLikeService timeLikeService;
-	
+
+	private final TimeLikeService timeLikeService;
+
 	@GetMapping("/me")
 	@Operation(summary = "API timeline")
 	@ApiResponse(responseCode = "200", description = "get timeline successfully")
 	@ApiResponse(responseCode = "400", description = "get timeline error")
-	BaseResponse<PostListResDto> getTimeLine(@RequestParam Integer pageNumber,
-			@RequestParam Integer pageSize){
+	BaseResponse<PostListResDto> getTimeLine(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
 		Pageable paging = PageRequest.of(pageNumber, pageSize);
 		Page<PostPostResDto> result = timeLikeService.getTimeLinePost(paging);
 		return BaseResponse.<PostListResDto>builder().result(PostListResDto.builder().listPost(result).build())

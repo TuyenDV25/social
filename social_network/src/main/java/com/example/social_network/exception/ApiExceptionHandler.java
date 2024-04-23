@@ -16,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.example.social_network.response.BaseResponse;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
@@ -74,6 +75,12 @@ public class ApiExceptionHandler {
 
 		return ResponseEntity.status(errorCode.getStatusCode())
 				.body(BaseResponse.builder().code(errorCode.getCode()).message(errorCode.getMessage()).build());
+	}
+
+	@ExceptionHandler(ExpiredJwtException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException e) {
+		return new ResponseEntity<>("jwt Token Has expired", HttpStatus.UNAUTHORIZED);
 	}
 
 }

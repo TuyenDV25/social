@@ -3,7 +3,6 @@ package com.example.social_network.dto.utils.comment;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.social_network.dto.comment.CommentResDto;
@@ -20,17 +19,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentResDto> {
 
-	@Autowired
-	private ImageResponseMapper imageMapper;
+	private final ImageResponseMapper imageMapper;
 	
-	@Autowired
-	private CommentResponseMapper commentMapper;
+	private final CommentResponseMapper commentMapper;
 
-	@Autowired
-	private UserInfoResponseUtils userInfoResponseUtils;
+	private final UserInfoResponseUtils userInfoResponseUtils;
 	
-	@Autowired
-	private LikeResponseUtils likeResponseUtils;
+	private final LikeResponseUtils likeResponseUtils;
 
 	@Override
 	public CommentResDto convert(Comment entity) {

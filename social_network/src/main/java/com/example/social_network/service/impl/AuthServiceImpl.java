@@ -1,10 +1,8 @@
 package com.example.social_network.service.impl;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,26 +31,23 @@ import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.AuthService;
 import com.example.social_network.service.OTPService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-	@Autowired
-	private UserInfoRepository userInfoRepository;
+	private final UserInfoRepository userInfoRepository;
 
-	@Autowired
-	private PasswordResetTokenReponsitory passwordResetTokenReponsitory;
+	private final PasswordResetTokenReponsitory passwordResetTokenReponsitory;
 
-	@Autowired
-	private JwtUtils jwtUtils;
+	private final JwtUtils jwtUtils;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private ModelMapper modelMapper;
+	private final ModelMapper modelMapper;
 
-	@Autowired
-	private OTPService otpService;
+	private final OTPService otpService;
 
 	@Override
 	public UserInforSignupResDto insertUser(RegistUserRepDto reqDto) {
@@ -62,8 +57,8 @@ public class AuthServiceImpl implements AuthService {
 		userInfor.setRoles(RoleType.USER.name());
 
 		// check user tồn tại
-		UserInfo existUser = userInfoRepository.findByUsername(reqDto.getUsername()).orElse(null);
-		if (Objects.nonNull(existUser)) {
+		Optional<UserInfo> existUser = userInfoRepository.findByUsername(reqDto.getUsername());
+		if (existUser.isPresent()) {
 			throw new AppException(ErrorCode.USER_EXISTED);
 		}
 		userInfoRepository.save(userInfor);
@@ -73,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public PasswordResetRequestResDto requestPasswordReset(PasswordResetRequestReqDto reqDto) {
 		Optional<UserInfo> userInfoEntity = userInfoRepository.findByUsername(reqDto.getUsername());
-		
+
 		if (!userInfoEntity.isPresent()) {
 			throw new AppException(ErrorCode.SIGNIN_ERROR);
 		}
@@ -106,11 +101,11 @@ public class AuthServiceImpl implements AuthService {
 
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		UserInfo userInfo = passwordResetTokenEntity.getUserInfo();
-		String password = encoder.encode(reqDto.getPassword());
-		userInfo.setPassword(password);
+
+		userInfo.setPassword(encoder.encode(reqDto.getPassword()));
 		UserInfo savedUserInfo = userInfoRepository.save(userInfo);
 
-		if (savedUserInfo == null || !savedUserInfo.getPassword().equalsIgnoreCase(password)) {
+		if (savedUserInfo == null) {
 			throw new AppException(ErrorCode.INVALID_KEY);
 		}
 

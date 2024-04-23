@@ -52,15 +52,9 @@ public class CommonConstants {
 
 	public static final String SIGN_UP_SUCCESS = "signup successfully";
 
-	public static final String REQUEST_RESET_PASSWORD_SUCCESS = "đã send link tới mail để tạo mới mật khẩu";
+	public static final String REQUEST_RESET_PASSWORD_SUCCESS = "đã gửi link tới mail để tạo mới mật khẩu";
 
 	public static final String RESET_PASSWORD_SUCCESS = "Tạo mới mật khẩu thành công";
-
-	public static final String INPUT_OTP = "Otp";
-
-	public static final String INPUT_TOKEN = "Token";
-
-	public static final String USER_DIR = "user.dir";
 
 	public static final String AVATAR_PATCH = "src/main/resources/Avatar";
 

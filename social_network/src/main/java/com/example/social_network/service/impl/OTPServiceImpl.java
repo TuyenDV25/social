@@ -14,7 +14,7 @@ import com.google.common.cache.LoadingCache;
 @Service
 public class OTPServiceImpl implements OTPService {
 
-	private LoadingCache<String, Integer> otpCache;
+	private final LoadingCache<String, Integer> otpCache;
 
 	public OTPServiceImpl() {
 		super();

@@ -33,7 +33,7 @@ public final class Utils {
 		}
 
 		catch (ParseException e) {
-			e.printStackTrace();
+			
 		}
 		return result;
 	}

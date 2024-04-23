@@ -1,6 +1,5 @@
 package com.example.social_network.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,13 +25,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/auth")
 public class AuthController {
 
-	@Autowired
-	private AuthService service;
+	private final AuthService service;
 
 	@Operation(summary = "API signup")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "register succesfully", content = {

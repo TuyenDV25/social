@@ -12,9 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentResDto extends AbstractDto {
 	private String content;
 
@@ -23,7 +23,7 @@ public class CommentResDto extends AbstractDto {
 
 	@JsonProperty("userInfo")
 	private UserInforResDto userInfo;
-	
+
 	@JsonProperty("likes")
 	private List<LikeResDto> likes;
 

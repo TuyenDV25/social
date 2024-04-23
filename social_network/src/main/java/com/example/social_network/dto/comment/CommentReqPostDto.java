@@ -1,9 +1,7 @@
 package com.example.social_network.dto.comment;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
 public class CommentReqPostDto {
 

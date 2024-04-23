@@ -1,6 +1,5 @@
 package com.example.social_network.dto.utils.post;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.social_network.dto.post.PostPostResDto;
@@ -20,27 +19,19 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PostResponseUtils extends ResponseUtilsAdapter<Post, PostPostResDto> {
 
-	@Autowired
-	private PostResponseMapper postMapper;
+	private final PostResponseMapper postMapper;
 
-	@Autowired
-	private ImageResponseMapper imageMapper;
+	private final ImageResponseMapper imageMapper;
 
-	@Autowired
-	private LikeRepository likeRepository;
+	private final LikeRepository likeRepository;
 
-	@Autowired
-	private CommentRepository commentRepository;
+	private final CommentRepository commentRepository;
 
-	@Autowired
-	private CommentResponseUtils commentResponseUtils;
+	private final CommentResponseUtils commentResponseUtils;
 
-	@Autowired
-	private LikeResponseUtils likeResponseUtils;
-	
-	@Autowired
-	private UserInfoResponseUtils userResponseUtils;
-	
+	private final LikeResponseUtils likeResponseUtils;
+
+	private final UserInfoResponseUtils userResponseUtils;
 
 	@Override
 	public PostPostResDto convert(Post entity) {

@@ -1,10 +1,8 @@
 package com.example.social_network.dto.comment;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
 public class LikeCommentReqDto {
 	@NotNull(message = "is required")

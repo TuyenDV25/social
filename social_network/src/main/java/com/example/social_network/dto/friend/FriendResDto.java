@@ -5,13 +5,9 @@ import java.util.Date;
 import com.example.social_network.dto.user.UserInforResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class FriendResDto {
 	private UserInforResDto userInfo;
 

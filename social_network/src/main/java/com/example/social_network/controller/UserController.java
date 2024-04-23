@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.social_network.dto.user.UserInfoListPostReqDto;
 import com.example.social_network.dto.user.UserInfoListPostResDto;
 import com.example.social_network.dto.user.UserInfoPutReqDto;
 import com.example.social_network.dto.user.UserInforResDto;
@@ -71,7 +70,6 @@ public class UserController {
 	/**
 	 * get list information of user
 	 * 
-	 * @param reqDto {@link UserInfoListPostReqDto}
 	 * @return {@link UserInfoListPostResDto} list of user by name and size and
 	 *         index
 	 */

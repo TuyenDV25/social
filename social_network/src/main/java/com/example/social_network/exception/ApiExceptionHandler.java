@@ -1,6 +1,5 @@
 package com.example.social_network.exception;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,24 +11,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import com.example.social_network.response.BaseResponse;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
 public class ApiExceptionHandler {
-
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ErrorMessage> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-		ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND.value(), new Date(), ex.getMessage(),
-				request.getDescription(false));
-
-		return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
-	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -76,11 +65,4 @@ public class ApiExceptionHandler {
 		return ResponseEntity.status(errorCode.getStatusCode())
 				.body(BaseResponse.builder().code(errorCode.getCode()).message(errorCode.getMessage()).build());
 	}
-
-	@ExceptionHandler(ExpiredJwtException.class)
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException e) {
-		return new ResponseEntity<>("jwt Token Has expired", HttpStatus.UNAUTHORIZED);
-	}
-
 }

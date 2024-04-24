@@ -41,10 +41,12 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 	public List<CommentResDto> convert(List<Comment> listEntity) {
 		List<CommentResDto> listResDto = new ArrayList<>();
 		listEntity.stream().forEach(entity -> {
-			listResDto.add(CommentResDto.builder().content(entity.getContent())
-					.image(imageMapper.entityToDto(entity.getImage()))
-					.likes(likeResponseUtils.convert(entity.getLikes()))
-					.userInfo(userInfoResponseUtils.convert(entity.getUser())).build());
+			CommentResDto res = new CommentResDto();
+			res.setContent(entity.getContent());
+			res.setImage(imageMapper.entityToDto(entity.getImage()));
+			res.setLikes(likeResponseUtils.convert(entity.getLikes()));
+			res.setUserInfo(userInfoResponseUtils.convert(entity.getUser()));
+			listResDto.add(res);
 		});
 		return listResDto;
 	}

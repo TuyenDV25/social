@@ -6,14 +6,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserInfoPutReqDto {
 
 	@Length(min = 3, max = 20, message = "must be from 3 to 20 characters!")

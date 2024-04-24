@@ -1,5 +1,16 @@
 package com.example.social_network.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,17 +34,6 @@ import com.example.social_network.repository.UserInfoRepository;
 import com.example.social_network.service.FileService;
 import com.example.social_network.service.ImageService;
 import com.example.social_network.utils.Utils;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
@@ -64,8 +64,13 @@ public class UserServiceImplTest {
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 
-		UserInfoPutReqDto reqDto = UserInfoPutReqDto.builder().lastName("Tester").firstName("Dov").birthDay("19991111")
-				.introyourself("minh ten a").gender("1").idHomeTown(1).idCurrentCity(1).build();
+		UserInfoPutReqDto reqDto = new UserInfoPutReqDto();
+		reqDto.setLastName("Tester");
+		reqDto.setFirstName("Dov");
+		reqDto.setBirthDay("19991111");
+		reqDto.setIntroyourself("minh ten a");
+		reqDto.setGender("1");
+		reqDto.setIdHomeTown(1);
 		UserInforResDto user = new UserInforResDto();
 		user.setLastName("Tester");
 		user.setFirstName("Dov");
@@ -134,40 +139,41 @@ public class UserServiceImplTest {
 
 	@Test
 	void searchByName_blank_validRequest_success() {
-		
+
 		var pageable = PageRequest.of(0, 10);
-		
-        List<UserInfo> listUser = new ArrayList<>();
-		
+
+		List<UserInfo> listUser = new ArrayList<>();
+
 		Page<UserInfo> userInfo = new PageImpl<>(listUser);
-		
+
 		when(userInfoRepository.findAll(pageable)).thenReturn(userInfo);
-		
+
 		var result = userServiceImpl.searchUserByName(0, "");
 
 	}
-	
+
 	@Test
 	void searchByName_notBlank_validRequest_success() {
-		
+
 		var pageable = PageRequest.of(0, 10);
-		
-        List<UserInfo> listUser = new ArrayList<>();
-		
+
+		List<UserInfo> listUser = new ArrayList<>();
+
 		Page<UserInfo> userInfo = new PageImpl<>(listUser);
-		
-		when(userInfoRepository.findAllByFirstNameContainsOrLastNameContains("cc", "cc", pageable)).thenReturn(userInfo);
-		
+
+		when(userInfoRepository.findAllByFirstNameContainsOrLastNameContains("cc", "cc", pageable))
+				.thenReturn(userInfo);
+
 		var result = userServiceImpl.searchUserByName(0, "cc");
 
 	}
-	
+
 	@Test
 	void updateUserInfo_notBlank_validRequest_success() {
 		UserInfo user = new UserInfo();
 		userServiceImpl.updateUserInfo(user);
 	}
-	
+
 	@Test
 	void findOneById_notBlank_validRequest_success() {
 		UserInfo userTest = new UserInfo();
@@ -179,13 +185,13 @@ public class UserServiceImplTest {
 		userTest.setAvatarImage(new ArrayList<Image>());
 		when(userInfoRepository.findOneById(any())).thenReturn(userTest);
 		userServiceImpl.findOneById(1L);
-		
+
 	}
-	
+
 	@Test
 	void findDetailUser_notBlank_validRequest_success() {
 		userServiceImpl.findDetailUser(1L);
-		
+
 	}
 
 }

@@ -4,12 +4,10 @@ import org.springframework.data.domain.Page;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class PostListResDto {
 

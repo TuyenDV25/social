@@ -10,13 +10,11 @@ import com.example.social_network.dto.like.LikeResDto;
 import com.example.social_network.dto.user.UserInforResDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
 public class PostPostResDto extends AbstractDto {
-	
+
 	private Long id;
 
 	private String content;
@@ -37,7 +35,7 @@ public class PostPostResDto extends AbstractDto {
 
 	@JsonProperty("cmt_count")
 	private Long commentCount;
-	
+
 	@JsonProperty("userInfo")
 	private UserInforResDto userInfo;
 

@@ -48,8 +48,8 @@ public class CommentController {
 	@ApiResponse(responseCode = "400", description = "create comment error")
 	@ApiResponse(responseCode = "404", description = "Post not found")
 	@ApiResponse(responseCode = "401", description = "UserName not found")
-	public BaseResponse<CommentResDto> createComment(@PathVariable("id") Long postId, @RequestPart @Valid CommentReqPostDto reqDto,
-			@RequestPart(required = false) MultipartFile multipartFile) {
+	public BaseResponse<CommentResDto> createComment(@PathVariable("id") Long postId,
+			@RequestPart @Valid CommentReqPostDto reqDto, @RequestPart(required = false) MultipartFile multipartFile) {
 		CommentResDto resDto = commentService.createComment(postId, reqDto, multipartFile);
 		return BaseResponse.<CommentResDto>builder().result(resDto).message(CommonConstants.COMMENT_CREATE_SUCCESS)
 				.build();
@@ -61,8 +61,8 @@ public class CommentController {
 	@ApiResponse(responseCode = "400", description = "Update comment error")
 	@ApiResponse(responseCode = "404", description = "Comment not found")
 	@ApiResponse(responseCode = "401", description = "UserName not found")
-	public BaseResponse<CommentResDto> updateComment(@PathVariable("id") Long commentId, @RequestPart @Valid CommentReqPutDto reqDto,
-			@RequestPart(required = false) MultipartFile multipartFile) {
+	public BaseResponse<CommentResDto> updateComment(@PathVariable("id") Long commentId,
+			@RequestPart @Valid CommentReqPutDto reqDto, @RequestPart(required = false) MultipartFile multipartFile) {
 		CommentResDto resDto = commentService.updateComment(commentId, reqDto, multipartFile);
 		return BaseResponse.<CommentResDto>builder().result(resDto).message(CommonConstants.COMMENT_UPDATE_SUCCESS)
 				.build();
@@ -87,8 +87,10 @@ public class CommentController {
 	public BaseResponse<CommentListResDto> getAllComment(@PathVariable("id") Long id,
 			@RequestParam Integer pageNumber) {
 		Page<CommentResDto> result = commentService.getAllComment(id, pageNumber);
-		return BaseResponse.<CommentListResDto>builder().result(CommentListResDto.builder().listComment(result).build())
-				.message(CommonConstants.USER_SEARCH_SUCCES).build();
+		CommentListResDto res = new CommentListResDto();
+		res.setListComment(result);
+		return BaseResponse.<CommentListResDto>builder().result(res).message(CommonConstants.USER_SEARCH_SUCCES)
+				.build();
 	}
 
 }

@@ -2,7 +2,6 @@ package com.example.social_network.jwt;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,16 +16,16 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 @Configuration
 public class JwtAuthFilter extends OncePerRequestFilter {
-	
-	@Autowired
-	private JwtUtils jwtUtils;
 
-	@Autowired
-	private UserInfoServiceImpl userDetailsService;
+	private final JwtUtils jwtUtils;
+
+	private final UserInfoServiceImpl userDetailsService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

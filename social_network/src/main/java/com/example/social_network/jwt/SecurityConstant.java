@@ -4,7 +4,7 @@ public class SecurityConstant {
 	
 	public static final String SECRET_LOGIN = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 	
-	public static final long EXPIRATION_TIME = 6000000;
+	public static final long EXPIRATION_TIME = 60000;
 	
 	public static final long PASSWORD_RESET_EXPIRATION_TIME = 600000;
 	

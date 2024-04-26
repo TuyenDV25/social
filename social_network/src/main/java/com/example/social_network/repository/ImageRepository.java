@@ -11,6 +11,8 @@ import com.example.social_network.entity.Image;
 public interface ImageRepository extends JpaRepository<Image, Long> {
 	Image findOneById(Long id);
 
+	Image findOneByLinkImage(String link);
+
 	Image save(Image image);
 
 	void deleteById(Long id);

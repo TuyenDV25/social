@@ -19,6 +19,12 @@ public class ImageServiceImpl implements ImageService {
 
 		return imageRepository.findOneById(id);
 	}
+	
+	@Override
+	public Image findOneByLinkImage(String link) {
+
+		return imageRepository.findOneByLinkImage(link);
+	}
 
 	@Override
 	public Image save(Image image) {

@@ -48,8 +48,7 @@ public class ApiExceptionHandler {
 	}
 
 	@ExceptionHandler(value = Exception.class)
-	ResponseEntity<BaseResponse> handlingRuntimeException(RuntimeException exception) {
-		log.error("Exception: ", exception);
+	ResponseEntity<BaseResponse> handlingRuntimeException(Exception exception) {
 		BaseResponse apiResponse = new BaseResponse();
 
 		apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());

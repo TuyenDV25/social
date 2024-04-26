@@ -152,6 +152,11 @@ public class FriendServiceImpl implements FriendService {
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
 		UserInfo getRequestuser = userInfoRepository.findOneById(friendRequestId);
+
+		if (createRequestuser.getId() == friendRequestId) {
+			throw new AppException(ErrorCode.REMOVE_FRIENDREQUEST_YOURSELF);
+		}
+
 		if (getRequestuser == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		}
@@ -199,7 +204,8 @@ public class FriendServiceImpl implements FriendService {
 		Page<FriendRequest> result = friendRequestRepository.findByUserInfo(createRequestuser.getId(), page);
 		List<FriendRequestResDto> listUserInforResDto = result.stream().map(request -> {
 			FriendRequestResDto friendRequestResDto = new FriendRequestResDto();
-			friendRequestResDto.setUserInfo(userMapper.entityToDto(request.getUserInfo()));
+			friendRequestResDto.setCreatedDate(request.getCreatedDate());
+			friendRequestResDto.setUserInfo(userInfoResponseUtils.convert(request.getUserInfo()));
 			return friendRequestResDto;
 		}).collect(Collectors.toList());
 
@@ -211,7 +217,7 @@ public class FriendServiceImpl implements FriendService {
 	 */
 	@Override
 	public void acceptFriendRequest(Long friendRequestId) {
-		// thêm validate ko acept friend chính mình
+
 		UserInfo getRequestuser = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
@@ -273,7 +279,7 @@ public class FriendServiceImpl implements FriendService {
 		if (getRequestuser == null) {
 			throw new AppException(ErrorCode.USER_NOT_EXISTED);
 		}
-		
+
 		if (createRequestuser.getId() == friendRequestId) {
 			throw new AppException(ErrorCode.REMOVE_FRIEND_YOURSELF);
 		}

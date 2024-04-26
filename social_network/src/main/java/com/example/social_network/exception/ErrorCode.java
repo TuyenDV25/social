@@ -35,6 +35,9 @@ public enum ErrorCode {
 	ACCEPT_YOUR_REQUEST(1004, "you can not accept your request", HttpStatus.BAD_REQUEST),
 	NOT_FRIEND(1004, "not friend to remove", HttpStatus.BAD_REQUEST),
 	REMOVE_FRIEND_YOURSELF(1004, "can not remove friend yourself", HttpStatus.BAD_REQUEST),
+	DELETE_IMAGE_POST_WRONG(1004, "delete image not in post", HttpStatus.BAD_REQUEST),
+	DELETE_IMAGE_COMMENT_WRONG(1004, "delete image of comment is wrong", HttpStatus.BAD_REQUEST),
+	REMOVE_FRIENDREQUEST_YOURSELF(1004, "can not remove friend request yourself", HttpStatus.BAD_REQUEST),
 	ERROR_IMPORT_DATA_EXCEL(1001,"fail to import data to Excel file",HttpStatus.BAD_REQUEST),
 	COMMENT_UPLOAD_WRONG(1004, "comment must have at least content or file", HttpStatus.BAD_REQUEST),;
 

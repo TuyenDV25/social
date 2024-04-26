@@ -97,9 +97,6 @@ public class CommentServiceImpl implements CommentService {
 
 		Comment comment = commentRepository.findOneById(commentId);
 
-		if (!checkDataUpdateOK(comment, reqDto, files)) {
-			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
-		}
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
@@ -107,6 +104,10 @@ public class CommentServiceImpl implements CommentService {
 		if (comment == null || commentRepository.findByUserAndId(userInfor, commentId) == null
 				|| !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
+		}
+
+		if (!checkDataUpdateOK(comment, reqDto, files)) {
+			throw new AppException(ErrorCode.COMMENT_UPLOAD_WRONG);
 		}
 
 		comment.setContent(reqDto.getContent());
@@ -174,6 +175,9 @@ public class CommentServiceImpl implements CommentService {
 	 * @return true if data input ok, false otherwise
 	 */
 	private boolean checkDataUpdateOK(Comment comment, CommentReqPutDto reqDto, MultipartFile files) {
+		if (checkDeleteImage(comment, reqDto)) {
+			throw new AppException(ErrorCode.DELETE_IMAGE_COMMENT_WRONG);
+		}
 		// case only have content, if update no content and no upload image will be
 		// error
 		if ((comment.getImage() == null)) {
@@ -186,5 +190,18 @@ public class CommentServiceImpl implements CommentService {
 			}
 		}
 		return true;
+	}
+
+	private boolean checkDeleteImage(Comment comment, CommentReqPutDto reqDto) {
+		if (reqDto.getDeleteImageId() != null && comment.getImage() == null) {
+			return true;
+		}
+
+		if (reqDto.getDeleteImageId() != null && comment.getImage() != null
+				&& reqDto.getDeleteImageId() != comment.getImage().getId()) {
+			return true;
+		}
+
+		return false;
 	}
 }

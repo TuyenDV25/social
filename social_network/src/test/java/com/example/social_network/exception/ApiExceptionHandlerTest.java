@@ -25,7 +25,7 @@ public class ApiExceptionHandlerTest {
 	
 	@Test
 	void handlingRuntimeException_returnErrorValidate() {
-		var ex = new RuntimeException("loi roi");
+		var ex = new Exception("loi roi");
 
 		var response = handler.handlingRuntimeException(ex);
 

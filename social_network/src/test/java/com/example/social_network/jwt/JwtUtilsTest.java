@@ -4,14 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtUtilsTest {
@@ -43,45 +40,7 @@ public class JwtUtilsTest {
 	@Test
 	void validateToken_success() {
 		String token = jwtUtils.generateToken("Dovan@gmail.com", 6000000);
-		UserDetails user = new UserDetails() {
-
-			@Override
-			public boolean isEnabled() {
-				return false;
-			}
-
-			@Override
-			public boolean isCredentialsNonExpired() {
-				return false;
-			}
-
-			@Override
-			public boolean isAccountNonLocked() {
-				return false;
-			}
-
-			@Override
-			public boolean isAccountNonExpired() {
-				return false;
-			}
-
-			@Override
-			public String getUsername() {
-
-				return "Dovan@gmail.com";
-			}
-
-			@Override
-			public String getPassword() {
-				return null;
-			}
-
-			@Override
-			public Collection<? extends GrantedAuthority> getAuthorities() {
-				return null;
-			}
-		};
-		Boolean isOK = jwtUtils.validateToken(token, user);
+		Boolean isOK = jwtUtils.validateJwtToken(token);
 		assertEquals(true, isOK);
 	}
 

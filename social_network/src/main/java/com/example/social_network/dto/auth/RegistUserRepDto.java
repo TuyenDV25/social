@@ -1,7 +1,5 @@
 package com.example.social_network.dto.auth;
 
-import org.hibernate.validator.constraints.Length;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +16,7 @@ public class RegistUserRepDto {
 	@Schema(example = "username@gmail.net")
 	private String username;
 
-	@Length(min = 6, max = 20, message = "must be from 6 to 20 characters!")
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$", message = "Minimum eight characters, Maximum 20 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
 	@NotBlank(message = "is required")
 	private String password;
 }

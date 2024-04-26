@@ -143,7 +143,10 @@ public class CommentResponseUtilsTest {
 		comment.setUser(userInfo);
 		commentList.add(comment);
 		
+		CommentResDto comres = new CommentResDto();
+		
 		when(imageMapper.entityToDto(comment.getImage())).thenReturn(imageDto);
+		when(commentMapper.entityToDto(comment)).thenReturn(comres);
 		when(likeResponseUtils.convert(comment.getLikes())).thenReturn(listLikeDto);
 		when(userInfoResponseUtils.convert(comment.getUser())).thenReturn(userDto);
 		

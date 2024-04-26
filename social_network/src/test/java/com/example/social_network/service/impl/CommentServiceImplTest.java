@@ -217,11 +217,23 @@ public class CommentServiceImplTest {
 
 	@Test
 	void UpdateComment_validRequest_wrongInput_fail() {
+		var authentication = mock(Authentication.class);
+		var securityContext = mock(SecurityContext.class);
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
 		CommentReqPutDto reqDto = new CommentReqPutDto();
 		reqDto.setContent("");
 		Comment comment = new Comment();
 		comment.setContent("");
+		UserInfo userTest = new UserInfo();
+		userTest.setLastName("Tester");
+		userTest.setFirstName("Dov");
+
 		when(commentRepository.findOneById(1L)).thenReturn(comment);
+		when(userInfoRepository.findByUsername(any())).thenReturn(Optional.of(userTest));
+		when(commentRepository.findByUserAndId(userTest, 1L)).thenReturn(comment);
+
+		when(postService.checkRightAccessPost(comment.getPost(), userTest)).thenReturn(true);
 
 		AppException exception = assertThrows(AppException.class,
 				() -> commentServiceImpl.updateComment(1L, reqDto, null));

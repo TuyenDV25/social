@@ -20,11 +20,11 @@ import lombok.AllArgsConstructor;
 public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentResDto> {
 
 	private final ImageResponseMapper imageMapper;
-	
+
 	private final CommentResponseMapper commentMapper;
 
 	private final UserInfoResponseUtils userInfoResponseUtils;
-	
+
 	private final LikeResponseUtils likeResponseUtils;
 
 	@Override
@@ -41,7 +41,7 @@ public class CommentResponseUtils extends ResponseUtilsAdapter<Comment, CommentR
 	public List<CommentResDto> convert(List<Comment> listEntity) {
 		List<CommentResDto> listResDto = new ArrayList<>();
 		listEntity.stream().forEach(entity -> {
-			CommentResDto res = new CommentResDto();
+			CommentResDto res = commentMapper.entityToDto(entity);
 			res.setContent(entity.getContent());
 			res.setImage(imageMapper.entityToDto(entity.getImage()));
 			res.setLikes(likeResponseUtils.convert(entity.getLikes()));

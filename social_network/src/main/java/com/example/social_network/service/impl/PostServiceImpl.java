@@ -261,6 +261,11 @@ public class PostServiceImpl implements PostService {
 	 * @return true if ok
 	 */
 	private boolean checkDataUpdateOK(Post post, PostPutReqDto reqDto, MultipartFile[] files) {
+		// check if delete image not in post
+		if (checkDeleteImageLink(post, reqDto)) {
+			throw new AppException(ErrorCode.DELETE_IMAGE_POST_WRONG);
+		}
+
 		// if have only content, input empty content and have not image will be error
 		if (CollectionUtils.isEmpty(post.getImages())) {
 			if (StringUtils.isBlank(reqDto.getContent()) && files == null) {
@@ -274,5 +279,28 @@ public class PostServiceImpl implements PostService {
 			}
 		}
 		return true;
+	}
+
+	private boolean checkDeleteImageLink(Post post, PostPutReqDto reqDto) {
+		// delete link that
+		if (CollectionUtils.isEmpty(post.getImages()) && !CollectionUtils.isEmpty(reqDto.getListImageIdDeletes())) {
+			return true;
+		}
+
+		//check delete link is wrong
+		if (!CollectionUtils.isEmpty(post.getImages()) && !CollectionUtils.isEmpty(reqDto.getListImageIdDeletes())) {
+			boolean isExistImage = false;
+			for (Long id : reqDto.getListImageIdDeletes()) {
+				for (Image image : post.getImages()) {
+					if (image.getId().equals(id)) {
+						isExistImage = true;
+					}
+				}
+				if (!isExistImage) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

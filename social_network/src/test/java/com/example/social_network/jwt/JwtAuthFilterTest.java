@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.example.social_network.service.impl.UserInfoServiceImpl;
 
@@ -34,7 +33,7 @@ public class JwtAuthFilterTest {
 		UserDetails userDetails = mock(UserDetails.class);
 
 		when(request.getHeader("Authorization")).thenReturn("Bearer token");
-		when(jwtTokenUtil.validateToken("token", userDetails)).thenReturn(true);
+		when(jwtTokenUtil.validateJwtToken("token")).thenReturn(true);
 		when(jwtTokenUtil.extractUsername("token")).thenReturn("user");
 		when(userDetailsService.loadUserByUsername("user")).thenReturn(userDetails);
 		when(userDetails.getAuthorities()).thenReturn(null);
@@ -46,7 +45,7 @@ public class JwtAuthFilterTest {
 		verify(filterChain).doFilter(request, response);
 		verifyNoMoreInteractions(filterChain);
 		verify(request).getHeader("Authorization");
-		verify(jwtTokenUtil).validateToken("token", userDetails);
+		verify(jwtTokenUtil).validateJwtToken("token");
 		verify(jwtTokenUtil).extractUsername("token");
 		verify(userDetailsService).loadUserByUsername("user");
 		verify(userDetails).getAuthorities();

@@ -34,7 +34,7 @@ public class Comment extends AbstractEntity {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	@OneToOne(mappedBy = "comment")
+	@OneToOne(mappedBy = "comment", cascade = CascadeType.REMOVE)
 	@JsonBackReference
 	private Image image;
 

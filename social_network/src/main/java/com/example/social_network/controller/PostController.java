@@ -84,13 +84,13 @@ public class PostController {
 	 * @param reqDto
 	 * @return {@link PostPostResDto}
 	 */
-	@PatchMapping(value = "/update-privacy/{postId}")
+	@PatchMapping(value = "/update-privacy/{idPost}")
 	@Operation(summary = "API update privacy", description = "Update privacy of post")
 	@ApiResponse(responseCode = "200", description = "Update privacy successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostPrivacyPutReqDto.class)))
 	@ApiResponse(responseCode = "401", description = "UserName not found")
 	@ApiResponse(responseCode = "404", description = "Update post not existed")
 	@ApiResponse(responseCode = "400", description = "Update post error")
-	BaseResponse<PostPostResDto> updatePrivacy(@PathVariable("id") Long idPost, @Valid @RequestBody PostPrivacyPutReqDto reqDto) {
+	BaseResponse<PostPostResDto> updatePrivacy(@PathVariable("idPost") Long idPost, @Valid @RequestBody PostPrivacyPutReqDto reqDto) {
 		PostPostResDto resDto = postService.updatePrivacy(idPost, reqDto);
 		return BaseResponse.<PostPostResDto>builder().result(resDto)
 				.message(CommonConstants.POST_UPDATE_PRIVACY_SUCCESS).build();

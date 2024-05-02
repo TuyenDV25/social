@@ -38,7 +38,7 @@ public class FileServiceImpl implements FileService {
 			for (MultipartFile file : files) {
 				String contentType = file.getContentType();
 				String formatFile = FilenameUtils.getExtension(file.getOriginalFilename()).toLowerCase();
-				if (contentType != null && contentType.startsWith("image"))
+				if (contentType == null || !contentType.startsWith("image"))
 					throw new AppException(ErrorCode.EXTENSION_INVALID);
 				if (!formatFile.equals("jpg") && !formatFile.equals("png") && !formatFile.equals("jpeg"))
 					throw new AppException(ErrorCode.EXTENSION_INVALID);

@@ -32,6 +32,7 @@ public class UserInfoPutReqDto {
 	@Length(min = 5, max = 100, message = "must be from 5 to 100 characters")
 	private String introyourself;
 
+	@Pattern(regexp = "^[0-1]{1}$", message = "must be 0 or 1")
 	private String gender;
 
 	@JsonProperty("hometown")

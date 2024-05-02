@@ -3,9 +3,12 @@ package com.example.social_network.entity;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,12 +23,13 @@ public class Image extends AbstractEntity {
 	@JoinColumn(name = "userInfo_id")
 	private UserInfo userInfo;
 
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "comment_id")
+	@JsonManagedReference
 	private Comment comment;
 
 	public String getLinkImage() {

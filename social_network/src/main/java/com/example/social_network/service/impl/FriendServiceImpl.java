@@ -19,7 +19,6 @@ import com.example.social_network.entity.UserInfo;
 import com.example.social_network.exception.AppException;
 import com.example.social_network.exception.ErrorCode;
 import com.example.social_network.mapper.user.FriendUserInfo;
-import com.example.social_network.mapper.user.UserMapper;
 import com.example.social_network.repository.FriendRepository;
 import com.example.social_network.repository.FriendRequestRepository;
 import com.example.social_network.repository.UserInfoRepository;
@@ -40,8 +39,6 @@ public class FriendServiceImpl implements FriendService {
 	private final FriendRepository friendRepository;
 
 	private final UserService userService;
-
-	private final UserMapper userMapper;
 
 	private final UserInfoResponseUtils userInfoResponseUtils;
 
@@ -82,6 +79,19 @@ public class FriendServiceImpl implements FriendService {
 			listFriendOfcreateRequestUser.add(friend);
 			createRequestuser.setListFriend(listFriendOfcreateRequestUser);
 			userService.updateUserInfo(getRequestuser);
+			
+			//delete friend request
+			List<FriendRequest> listFriendRequestOfGetRequestUser = createRequestuser.getListFriendRequest();
+
+			for (FriendRequest friendRequest : listFriendRequestOfGetRequestUser) {
+				if (friendRequest.getUserInfo().getId() == getRequestuser.getId()) {
+					listFriendRequestOfGetRequestUser.remove(friendRequest);
+					createRequestuser.setListFriendRequest(listFriendRequestOfGetRequestUser);
+					userService.updateUserInfo(createRequestuser);
+					friendRequestRepository.delete(friendRequest);
+					break;
+				}
+			}
 
 			List<Friend> listFriendOfGetRequestUser = getRequestuser.getListFriend();
 			friend = new Friend();

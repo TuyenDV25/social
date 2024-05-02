@@ -29,7 +29,6 @@ import com.example.social_network.entity.Image;
 import com.example.social_network.entity.UserInfo;
 import com.example.social_network.exception.AppException;
 import com.example.social_network.mapper.user.FriendUserInfo;
-import com.example.social_network.mapper.user.UserMapper;
 import com.example.social_network.repository.FriendRepository;
 import com.example.social_network.repository.FriendRequestRepository;
 import com.example.social_network.repository.UserInfoRepository;
@@ -52,9 +51,6 @@ public class FriendServiceImplTest {
 	private UserService userService;
 
 	@Mock
-	private UserMapper userMapper;
-
-	@Mock
 	private UserInfoResponseUtils userInfoResponseUtils;
 
 	private FriendServiceImpl friendServiceImpl;
@@ -62,7 +58,7 @@ public class FriendServiceImplTest {
 	@BeforeEach
 	public void setUp() {
 		friendServiceImpl = new FriendServiceImpl(userInfoRepository, friendRequestRepository, friendRepository,
-				userService, userMapper, userInfoResponseUtils);
+				userService, userInfoResponseUtils);
 	}
 
 	@Test

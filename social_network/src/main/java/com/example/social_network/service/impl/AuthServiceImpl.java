@@ -90,8 +90,8 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public void resetNewPassword(PasswordResetReqDto reqDto) {
-		if (jwtUtils.isTokenExpired(reqDto.getToken())) {
-			throw new AppException(ErrorCode.TOKEN_EXPIRED);
+		if (!jwtUtils.validateJwtToken(reqDto.getToken())) {
+			throw new AppException(ErrorCode.TOKEN_RESET_PSW_WRONG);
 		}
 		PasswordResetToken passwordResetTokenEntity = passwordResetTokenReponsitory.findByToken(reqDto.getToken());
 

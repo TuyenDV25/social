@@ -14,11 +14,11 @@ import lombok.Setter;
 public class OtpReqDto {
 
 	@Pattern(regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$", message = "UserName incorrect format")
-	@NotNull(message = "userName must be not null!")
+	@NotNull(message = "is required")
 	@Schema(example = "username@gmail.net")
 	private String userName;
 
-	@Length(min = 6, max = 20, message = "must be from 6 to 20 characters!")
-	@NotBlank(message = "Password is required")
+	@Length(min = 8, max = 20, message = "must be from 8 to 20 characters!")
+	@NotBlank(message = "is required")
 	private String password;
 }

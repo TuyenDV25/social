@@ -4,6 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,26 +30,26 @@ public class FriendController {
 
 	private final FriendService friendService;
 
-	@GetMapping("addRequest")
+	@PostMapping("addRequest/{getFriendRequestUserId}")
 	@Operation(summary = "API add request Friend", description = "add Request add Friend")
 	@ApiResponse(responseCode = "200", description = "add request successfully")
 	@ApiResponse(responseCode = "400", description = "add request error")
 	@ApiResponse(responseCode = "401", description = "UserName not found")
 	@ApiResponse(responseCode = "404", description = "add friend to not exist user")
-	BaseResponse<?> addFriendRequest(@RequestParam("id") Long friendRequestId) {
-		Integer AddFriendResult = friendService.addFriendRequest(friendRequestId);
+	BaseResponse<?> addFriendRequest(@PathVariable Long getFriendRequestUserId) {
+		Integer AddFriendResult = friendService.addFriendRequest(getFriendRequestUserId);
 		return BaseResponse.builder().message(AddFriendResult == 2 ? CommonConstants.ADD_REQUEST_FRIEND_SUCCESS
 				: CommonConstants.ACCEPT_REQUEST_FRIEND_SUCCESS).build();
 	}
 
-	@GetMapping("removeRequest")
+	@PutMapping("declineRequest/{declineFriendRequestUserId}")
 	@Operation(summary = "API remove request Friend", description = "remove Request add Friend")
 	@ApiResponse(responseCode = "200", description = "remove request successfully")
 	@ApiResponse(responseCode = "400", description = "remove request error")
 	@ApiResponse(responseCode = "401", description = "UserName not found")
 	@ApiResponse(responseCode = "404", description = "add friend to not exist user")
-	BaseResponse<?> removeFriendRequest(@RequestParam("id") Long friendRequestId) {
-		friendService.removeFriendRequest(friendRequestId);
+	BaseResponse<?> removeFriendRequest(@PathVariable  Long declineFriendRequestUserId) {
+		friendService.removeFriendRequest(declineFriendRequestUserId);
 		return BaseResponse.builder().message(CommonConstants.REMOVE_REQUEST_FRIEND_SUCCESS).build();
 	}
 
@@ -64,25 +67,25 @@ public class FriendController {
 				.message(CommonConstants.LIST_REQUEST).build();
 	}
 
-	@GetMapping("acceptFriend")
+	@PutMapping("acceptFriend/{friendRequestUserId}")
 	@Operation(summary = "API accept request Friend")
 	@ApiResponse(responseCode = "200", description = "accept request successfully")
 	@ApiResponse(responseCode = "400", description = "accept request error")
 	@ApiResponse(responseCode = "401", description = "UserName not found")
 	@ApiResponse(responseCode = "404", description = "add friend to not exist user")
-	BaseResponse<?> acceptFriendRequest(@RequestParam("id") Long friendRequestId) {
-		friendService.acceptFriendRequest(friendRequestId);
+	BaseResponse<?> acceptFriendRequest(@PathVariable  Long friendRequestUserId) {
+		friendService.acceptFriendRequest(friendRequestUserId);
 		return BaseResponse.builder().message(CommonConstants.ACCEPT_REQUEST_FRIEND_SUCCESS).build();
 	}
 
-	@GetMapping("removeFriend")
+	@PutMapping("removeFriend/{friendId}")
 	@Operation(summary = "API remove Friend")
 	@ApiResponse(responseCode = "200", description = "remove friend successfully")
 	@ApiResponse(responseCode = "400", description = "remove friend  error")
 	@ApiResponse(responseCode = "401", description = "UserName not found")
 	@ApiResponse(responseCode = "404", description = "add friend to not exist user")
-	BaseResponse<?> removeFriend(@RequestParam("id") Long friendRequestId) {
-		friendService.removeFriend(friendRequestId);
+	BaseResponse<?> removeFriend(@PathVariable  Long friendId) {
+		friendService.removeFriend(friendId);
 		return BaseResponse.builder().message(CommonConstants.REMOVE_FRIEND_SUCCESS).build();
 	}
 

@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class UserInfoPutReqDto {
 	private String firstName;
 
 	@DateTimeFormat(pattern = "yyyyMMdd")
+	@Pattern(regexp = "^(?:(?:19|20)[0-9]{2})(?:(?:(?:0[1-9]|1[0-2])(?:0[1-9]|1\\d|2[0-8]))|(?:0[13-9]|1[0-2])(29|30)|(?:0[13578]|1[02])31)$", message = "incorrect format")
 	private String birthDay;
 
 	@Length(min = 5, max = 100, message = "must be from 5 to 100 characters")

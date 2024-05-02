@@ -126,7 +126,7 @@ public class AuthServiceImplTest {
 		
 		when(userInfoRepository.findByUsername(reqDto.getUsername())).thenReturn(Optional.of(user2));
 		String token = "tokenvalidate";
-		when(jwtUtils.generateToken(user2.getUsername(), 600000)).thenReturn(token);
+		when(jwtUtils.generateToken(user2.getUsername(), 1200000)).thenReturn(token);
 		
 		var result = authServiceImpl.requestPasswordReset(reqDto);
 		assertEquals("http://localhost:8080/api/v1/auth/tokenvalidate", result.getLinkResetPassword());
@@ -153,7 +153,7 @@ public class AuthServiceImplTest {
 		PasswordResetReqDto reqDto = new PasswordResetReqDto();
 		reqDto.setPassword("matkhaumoi");
 		reqDto.setToken("etuy");
-		when(jwtUtils.isTokenExpired(reqDto.getToken())).thenReturn(false);
+		when(jwtUtils.validateJwtToken(reqDto.getToken())).thenReturn(true);
 		
 		PasswordResetToken pass = new PasswordResetToken();
 		pass.setId(1L);
@@ -181,27 +181,26 @@ public class AuthServiceImplTest {
 		PasswordResetReqDto reqDto = new PasswordResetReqDto();
 		reqDto.setPassword("matkhaumoi");
 		reqDto.setToken("etuy");
-		when(jwtUtils.isTokenExpired(reqDto.getToken())).thenReturn(true);
+		when(jwtUtils.validateJwtToken(reqDto.getToken())).thenReturn(false);
 		AppException exception = assertThrows(AppException.class,
 				() -> authServiceImpl.resetNewPassword( reqDto));
 
 		assertEquals(1008, exception.getErrorCode().getCode());
-		assertEquals("time out, you need to login again", exception.getMessage());
+		assertEquals("have error reset password", exception.getMessage());
 	}
 	
 	@Test
-	void resetNewPassword_validRequest_tokenWrong_success() {
+	void resetNewPassword_validRequest_tokenWrong_fail() {
 		PasswordResetReqDto reqDto = new PasswordResetReqDto();
 		reqDto.setPassword("matkhaumoi");
 		reqDto.setToken("etuy");
-		when(jwtUtils.isTokenExpired(reqDto.getToken())).thenReturn(false);
-		when(passwordResetTokenReponsitory.findByToken(reqDto.getToken())).thenReturn(null);
+		when(jwtUtils.validateJwtToken(reqDto.getToken())).thenReturn(false);
 		
 		AppException exception = assertThrows(AppException.class,
 				() -> authServiceImpl.resetNewPassword( reqDto));
 
-		assertEquals(1001, exception.getErrorCode().getCode());
-		assertEquals("Uncategorized error", exception.getMessage());
+		assertEquals(1008, exception.getErrorCode().getCode());
+		assertEquals("have error reset password", exception.getMessage());
 	}
 	
 	@Test

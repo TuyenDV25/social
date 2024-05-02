@@ -13,7 +13,7 @@ import com.example.social_network.entity.FriendRequest;
 @Transactional
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
 
-	@Query(value = "select fr.* from friend_request fr join user_info_list_friend_request ufr on fr.id = ufr.list_friend_request_id join user_info u on u.id = ufr.user_info_id and ufr.user_info_id=?1 order by fr.id desc", countQuery = "select count(*) from friend_request fr join user_info_list_friend_request ufr on fr.id = ufr.listfriend_request_id and ufr.user_info_id=?1", nativeQuery = true)
+	@Query(value = "select fr.* from friend_request fr join user_info_list_friend_request ufr on fr.id = ufr.list_friend_request_id join user_info u on u.id = ufr.user_info_id and ufr.user_info_id=?1 order by fr.id desc", countQuery = "select count(*) from friend_request fr join user_info_list_friend_request ufr on fr.id = ufr.list_friend_request_id and ufr.user_info_id=?1", nativeQuery = true)
 	Page<FriendRequest> findByUserInfo(Long id, Pageable pageable);
 
 }

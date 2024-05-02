@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserInforResDto findDetailUser(Long id) {
-		return userInfoResponseUtils.convert(userInfoRepository.findOneById(id));
+		return userInfoResponseUtils.convert(findOneById(id));
 	}
 
 }

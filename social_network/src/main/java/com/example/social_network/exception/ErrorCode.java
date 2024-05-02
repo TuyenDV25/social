@@ -17,7 +17,7 @@ public enum ErrorCode {
 	SIGNIN_ERROR(1008, "User not existed", HttpStatus.UNAUTHORIZED),
 	UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
 	UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
-	TOKEN_EXPIRED(1008, "time out, you need to login again", HttpStatus.UNAUTHORIZED),
+	TOKEN_RESET_PSW_WRONG(1008, "have error reset password", HttpStatus.UNAUTHORIZED),
 	OTP_INVALID(1003, "otp or userName is invalid", HttpStatus.UNAUTHORIZED),
 	EXTENSION_INVALID(1003, "file only be JPG or PNG", HttpStatus.BAD_REQUEST),
 	FILE_SIZE(1005, "your file over 5mb", HttpStatus.BAD_REQUEST),

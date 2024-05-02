@@ -8,7 +8,7 @@ public class CommonConstants {
 
 	public static final Integer EXPIRE_MINS = 1;
 
-	public static final String REGISTER_SUCCESS = "Đăng ký tài khoản thành công";
+	public static final String REGISTER_SUCCESS = "sign up successfully";
 
 	public static final String POST_CREATE_SUCCESS = "create post successfully";
 
@@ -52,9 +52,9 @@ public class CommonConstants {
 
 	public static final String SIGN_UP_SUCCESS = "signup successfully";
 
-	public static final String REQUEST_RESET_PASSWORD_SUCCESS = "đã gửi link tới mail để tạo mới mật khẩu";
+	public static final String REQUEST_RESET_PASSWORD_SUCCESS = "sent a link to mail to change password";
 
-	public static final String RESET_PASSWORD_SUCCESS = "Tạo mới mật khẩu thành công";
+	public static final String RESET_PASSWORD_SUCCESS = "reset password successfully";
 
 	public static final String AVATAR_PATCH = "src/main/resources/Avatar";
 

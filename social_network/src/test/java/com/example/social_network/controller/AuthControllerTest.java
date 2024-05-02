@@ -46,7 +46,7 @@ public class AuthControllerTest {
 		var result = authController.register(reqDto);
 
 		assertEquals(1000, result.getCode());
-		assertEquals("Đăng ký tài khoản thành công", result.getMessage());
+		assertEquals("sign up successfully", result.getMessage());
 	}
 	
 	@Test
@@ -93,7 +93,7 @@ public class AuthControllerTest {
 		var result = authController.resetPassword(reqDto);
 
 		assertEquals(1000, result.getCode());
-		assertEquals("đã gửi link tới mail để tạo mới mật khẩu", result.getMessage());
+		assertEquals("sent a link to mail to change password", result.getMessage());
 	}
 	
 	@Test
@@ -105,6 +105,6 @@ public class AuthControllerTest {
 		var result = authController.resetNewPassword(reqDto);
 
 		assertEquals(1000, result.getCode());
-		assertEquals("Tạo mới mật khẩu thành công", result.getMessage());
+		assertEquals("reset password successfully", result.getMessage());
 	}
 }

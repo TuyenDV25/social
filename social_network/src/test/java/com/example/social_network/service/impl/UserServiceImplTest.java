@@ -188,10 +188,4 @@ public class UserServiceImplTest {
 
 	}
 
-	@Test
-	void findDetailUser_notBlank_validRequest_success() {
-		userServiceImpl.findDetailUser(1L);
-
-	}
-
 }

@@ -1,8 +1,7 @@
 package com.example.social_network.dto.auth;
 
-import org.hibernate.validator.constraints.Length;
-
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,10 +9,10 @@ import lombok.Setter;
 @Setter
 public class PasswordResetReqDto {
 
-	@NotBlank(message = "token must be not null!")
+	@NotBlank(message = "is required")
 	private String token;
 
-	@Length(min = 6, max = 20, message = "must be from 6 to 20 characters!")
-	@NotBlank(message = "password must be not null!")
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$", message = "Minimum eight characters, Maximum 20 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
+	@NotBlank(message = "is required")
 	private String password;
 }

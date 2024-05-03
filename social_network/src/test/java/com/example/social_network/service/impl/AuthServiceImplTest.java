@@ -2,8 +2,6 @@ package com.example.social_network.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
@@ -23,10 +21,8 @@ import org.springframework.security.core.GrantedAuthority;
 import com.example.social_network.dto.auth.OtpGetReqDto;
 import com.example.social_network.dto.auth.OtpGetResDto;
 import com.example.social_network.dto.auth.OtpReqDto;
-import com.example.social_network.dto.auth.OtpResDto;
 import com.example.social_network.dto.auth.PasswordResetReqDto;
 import com.example.social_network.dto.auth.PasswordResetRequestReqDto;
-import com.example.social_network.dto.auth.PasswordResetRequestResDto;
 import com.example.social_network.dto.auth.RegistUserRepDto;
 import com.example.social_network.dto.user.UserInforSignupResDto;
 import com.example.social_network.entity.PasswordResetToken;
@@ -126,7 +122,7 @@ public class AuthServiceImplTest {
 		
 		when(userInfoRepository.findByUsername(reqDto.getUsername())).thenReturn(Optional.of(user2));
 		String token = "tokenvalidate";
-		when(jwtUtils.generateToken(user2.getUsername(), 1200000)).thenReturn(token);
+		when(jwtUtils.generateToken(user2.getUsername(), 2400000)).thenReturn(token);
 		
 		var result = authServiceImpl.requestPasswordReset(reqDto);
 		assertEquals("http://localhost:8080/api/v1/auth/tokenvalidate", result.getLinkResetPassword());

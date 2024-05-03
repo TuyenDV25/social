@@ -24,6 +24,7 @@ public enum ErrorCode {
 	FILE_UPLOAD(1012, "upload image error", HttpStatus.BAD_REQUEST),
 	POST_NOTEXISTED(1002, "post not existed", HttpStatus.NOT_FOUND),
 	POST_NOT_RIGHT(1002, "you can not fix or delete other's post", HttpStatus.BAD_REQUEST),
+	COMMENT_NOT_RIGHT(1002, "you can not fix or delete other's comment", HttpStatus.BAD_REQUEST),
 	COMMENT_NOTEXISTED(1002, "comment not existed", HttpStatus.NOT_FOUND),
 	POST_UPLOAD_WRONG(1004, "post must have at least content or file", HttpStatus.BAD_REQUEST),
 	ADD_FRIEND_YOUSELF(1004, "You can not add friend youself", HttpStatus.BAD_REQUEST),

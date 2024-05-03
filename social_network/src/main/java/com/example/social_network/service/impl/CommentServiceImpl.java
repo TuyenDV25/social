@@ -101,9 +101,12 @@ public class CommentServiceImpl implements CommentService {
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
-		if (comment == null || commentRepository.findByUserAndId(userInfor, commentId) == null
-				|| !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
+		if (comment == null || !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
+		}
+		
+		if (commentRepository.findByUserAndId(userInfor, commentId) == null) {
+			throw new AppException(ErrorCode.COMMENT_NOT_RIGHT);
 		}
 
 		if (!checkDataUpdateOK(comment, reqDto, files)) {
@@ -141,9 +144,12 @@ public class CommentServiceImpl implements CommentService {
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 
-		if (comment == null || commentRepository.findByUserAndId(userInfor, id) == null
-				|| !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
+		if (comment == null || !postService.checkRightAccessPost(comment.getPost(), userInfor)) {
 			throw new AppException(ErrorCode.COMMENT_NOTEXISTED);
+		}
+		
+		if (commentRepository.findByUserAndId(userInfor, comment.getId()) == null) {
+			throw new AppException(ErrorCode.COMMENT_NOT_RIGHT);
 		}
 		commentRepository.delete(comment);
 	}

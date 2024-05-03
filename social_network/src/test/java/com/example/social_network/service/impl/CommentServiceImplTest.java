@@ -255,8 +255,6 @@ public class CommentServiceImplTest {
 		UserInfo userTest = new UserInfo();
 		userTest.setLastName("Tester");
 		when(userInfoRepository.findByUsername(any())).thenReturn(Optional.of(userTest));
-		
-		when(commentRepository.findByUserAndId(userTest, 1L)).thenReturn(null);
 
 		AppException exception = assertThrows(AppException.class,
 				() -> commentServiceImpl.updateComment(1L, reqDto, null));
@@ -273,12 +271,18 @@ public class CommentServiceImplTest {
 		SecurityContextHolder.setContext(securityContext);
 		Comment comment = new Comment();
 		comment.setContent("tes");
+		comment.setId(1L);
+		
+		Post post = new Post();
+		post.setPrivacy(1);
+		post.setId(1L);
+		comment.setPost(post);
 		
 		when(commentRepository.findOneById(1L)).thenReturn(comment);
 		UserInfo userTest = new UserInfo();
 		userTest.setLastName("Tester");
 		when(userInfoRepository.findByUsername(any())).thenReturn(Optional.of(userTest));
-		when(commentRepository.findByUserAndId(userTest, 1L)).thenReturn(new Comment());
+		when(commentRepository.findByUserAndId(userTest, 1L)).thenReturn(mock( Comment.class));
 		when(postService.checkRightAccessPost(comment.getPost(), userTest)).thenReturn(true);
 		
 		commentServiceImpl.delete(1L);
@@ -297,8 +301,6 @@ public class CommentServiceImplTest {
 		UserInfo userTest = new UserInfo();
 		userTest.setLastName("Tester");
 		when(userInfoRepository.findByUsername(any())).thenReturn(Optional.of(userTest));
-		when(commentRepository.findByUserAndId(userTest, 1L)).thenReturn(new Comment());
-		when(postService.checkRightAccessPost(comment.getPost(), userTest)).thenReturn(false);
 		
 		AppException exception = assertThrows(AppException.class,
 				() -> commentServiceImpl.delete(1L));

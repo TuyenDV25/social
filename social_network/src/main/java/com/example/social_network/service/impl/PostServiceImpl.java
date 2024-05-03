@@ -103,7 +103,7 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
 		Post post = postRepository.findOneById(postId);
 
-		if (post == null) {
+		if (post == null || !checkRightAccessPost(post, user)) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
 		// check if user have right to update the post
@@ -151,12 +151,13 @@ public class PostServiceImpl implements PostService {
 	 */
 	@Override
 	public DeletePostResDto delete(Long id) {
-		if (postRepository.findOneById(id) == null)
-			throw new AppException(ErrorCode.POST_NOTEXISTED);
+		Post post = postRepository.findOneById(id);
 
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
+		if (post == null || !checkRightAccessPost(post, userInfor))
+			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		if (postRepository.findByUserInfoAndId(userInfor, id) == null) {
 			throw new AppException(ErrorCode.POST_NOT_RIGHT);
 		}
@@ -171,15 +172,15 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostPostResDto getPostDetail(Long Id) {
 		Post post = postRepository.findOneById(Id);
-		if (post == null) {
-			throw new AppException(ErrorCode.POST_NOTEXISTED);
-		}
+
 		UserInfo userInfor = userInfoRepository
 				.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
 				.orElseThrow(() -> new UsernameNotFoundException(CommonConstants.USER_NOT_FOUND));
-		if (!checkRightAccessPost(post, userInfor)) {
+
+		if (post == null || !checkRightAccessPost(post, userInfor)) {
 			throw new AppException(ErrorCode.POST_NOTEXISTED);
 		}
+
 		PostPostResDto resDto = postResponseUtils.convert(post);
 		return resDto;
 	}
@@ -287,7 +288,7 @@ public class PostServiceImpl implements PostService {
 			return true;
 		}
 
-		//check delete link is wrong
+		// check delete link is wrong
 		if (!CollectionUtils.isEmpty(post.getImages()) && !CollectionUtils.isEmpty(reqDto.getListImageIdDeletes())) {
 			boolean isExistImage = false;
 			for (Long id : reqDto.getListImageIdDeletes()) {

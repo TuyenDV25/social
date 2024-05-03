@@ -184,6 +184,7 @@ public class PostServiceImplTest {
 		image3.setLinkImage("24h.com");
 		imageList.add(image3);
 		post.setImages(imageList);
+		post.setUserInfo(userTest);
 		when(postRepository.findOneById(1L)).thenReturn(post);
 
 		when(postRepository.findByUserInfoAndId(any(), any())).thenReturn(post);
@@ -250,6 +251,7 @@ public class PostServiceImplTest {
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 		UserInfo userTest = new UserInfo();
+		userTest.setId(1L);
 		userTest.setLastName("Tester");
 		userTest.setFirstName("Dov");
 		userTest.setDob(Utils.convertStringToLocalDate("19991111"));
@@ -260,7 +262,11 @@ public class PostServiceImplTest {
 		when(userInfoRepository.findByUsername(any())).thenReturn(Optional.of(userTest));
 
 		PostPutReqDto reqDto = new PostPutReqDto();
-		when(postRepository.findOneById(any())).thenReturn(mock(Post.class));
+		Post post = new Post();
+		post.setPrivacy(1);
+		post.setId(1L);
+		post.setUserInfo(userTest);
+		when(postRepository.findOneById(any())).thenReturn(post);
 		when(postRepository.findByUserInfoAndId(any(), any())).thenReturn(null);
 		AppException exception = assertThrows(AppException.class, () -> postServiceImpl.update(1L, reqDto, null));
 
@@ -286,6 +292,8 @@ public class PostServiceImplTest {
 
 		PostPutReqDto reqDto = new PostPutReqDto();
 		Post post = new Post();
+		post.setId(1L);
+		post.setUserInfo(userTest);
 		when(postRepository.findOneById(any())).thenReturn(post);
 		when(postRepository.findByUserInfoAndId(any(), any())).thenReturn(mock(Post.class));
 		AppException exception = assertThrows(AppException.class, () -> postServiceImpl.update(1L, reqDto, null));
@@ -325,6 +333,13 @@ public class PostServiceImplTest {
 
 	@Test
 	void deletePost_validRequest_NotExistPost_fail() {
+		var authentication = mock(Authentication.class);
+		var securityContext = mock(SecurityContext.class);
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		UserInfo user = new UserInfo();
+		user.setId(1L);
+		when(userInfoRepository.findByUsername(any())).thenReturn(Optional.of(user));
 		when(postRepository.findOneById(any())).thenReturn(null);
 		AppException exception = assertThrows(AppException.class, () -> postServiceImpl.delete(1L));
 
@@ -342,7 +357,7 @@ public class PostServiceImplTest {
 		user2.setId(2L);
 
 		Post post = new Post();
-		post.setPrivacy(3);
+		post.setPrivacy(1);
 		post.setId(1L);
 		post.setUserInfo(user2);
 
@@ -396,6 +411,13 @@ public class PostServiceImplTest {
 
 	@Test
 	void GetPost_validRequest_NotExistPost_fail() {
+		var authentication = mock(Authentication.class);
+		var securityContext = mock(SecurityContext.class);
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		UserInfo user = new UserInfo();
+		user.setId(1L);
+		when(userInfoRepository.findByUsername(any())).thenReturn(Optional.of(user));
 		when(postRepository.findOneById(any())).thenReturn(null);
 		AppException exception = assertThrows(AppException.class, () -> postServiceImpl.getPostDetail(1L));
 

@@ -44,14 +44,12 @@ public class SecurityConfig {
 	// Configuring HttpSecurity
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-		return httpSecurity.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers( "api/v1/auth/signin", "api/v1/auth/signup", "api/v1/report/download", "api/v1/auth/password-reset").permitAll()
-						.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "api/v1/auth/password-reset-request",
-								"api/v1/auth/verify-otp")
-						.permitAll()
-						.requestMatchers("api/v1/auth/user/**").authenticated().anyRequest().authenticated())
+		return httpSecurity.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth
+				.requestMatchers("api/v1/auth/signin", "api/v1/auth/signup", "api/v1/report/download",
+						"api/v1/auth/password-reset", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
+				.permitAll()
+				.requestMatchers(HttpMethod.POST, "api/v1/auth/password-reset-request", "api/v1/auth/verify-otp")
+				.permitAll().requestMatchers("api/v1/auth/user/**").authenticated().anyRequest().authenticated())
 				.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
